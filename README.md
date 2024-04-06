@@ -3,12 +3,12 @@
 ## 📚사용 기술 스택
 
 - Spring MVC
-    - MySQL
-    - JPA
-    - Github
-    - Flyway
-    - Docker Compose
-    - Naver Cloud
+- MySQL
+- JPA
+- Github
+- Flyway
+- Docker Compose
+- Naver Cloud
 
 - Prometheus + Grafana
 - Ngrinder
