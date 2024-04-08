@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: league
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  h2:
+    console:
+      enabled: true
+      path:
+        /h2-console
+  datasource:
+    url: jdbc:h2:~/league
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: alpha
+  paths-to-match:
+    - /api/**
