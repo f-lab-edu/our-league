@@ -1,4 +1,4 @@
-package com.minsproject.league.config.entity;
+package com.minsproject.league.entity;
 
 import jakarta.persistence.*;
 

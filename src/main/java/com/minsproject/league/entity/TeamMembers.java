@@ -1,4 +1,4 @@
-package com.minsproject.league.config.entity;
+package com.minsproject.league.entity;
 
 import jakarta.persistence.*;
 
@@ -12,7 +12,7 @@ public class TeamMembers extends BaseEntity {
     private Long teamMemberId;
 
     @ManyToOne
-    private Team teamId;
+    private Teams teamId;
 
     @ManyToOne
     private Users userId;
