@@ -1,9 +1,10 @@
 package com.minsproject.league.service;
 
-import com.minsproject.league.dto.TeamCreateDTO;
-import com.minsproject.league.dto.TeamsDTO;
+import com.minsproject.league.controller.request.TeamCreateRequest;
 import com.minsproject.league.entity.Sports;
 import com.minsproject.league.entity.Teams;
+import com.minsproject.league.exception.ErrorCode;
+import com.minsproject.league.exception.LeagueCustomException;
 import com.minsproject.league.repository.SportsRepository;
 import com.minsproject.league.repository.TeamsRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,13 @@ public class TeamServiceImpl implements TeamService {
     private final SportsRepository sportsRepository;
 
     @Override
-    public Page<TeamsDTO> getTeamList(Pageable pageable) {
-        return teamsRepository.findAll(pageable).map(TeamsDTO::fromEntity);
+    public Page<Teams> getTeamList(Pageable pageable) {
+        return teamsRepository.findAll(pageable);
     }
 
     @Override
-    public void create(TeamCreateDTO dto) {
-        Sports sports = sportsRepository.findById(dto.getSportsId()).orElseThrow();
-        teamsRepository.save(Teams.fromDto(dto, sports));
+    public long create(TeamCreateRequest req) {
+        Sports sports = sportsRepository.findById(req.getSportsId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.SPORTS_NOT_FOUND));
+        return teamsRepository.save(Teams.fromDto(req, sports)).getTeamId();
     }
 }

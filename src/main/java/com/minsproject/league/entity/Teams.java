@@ -1,6 +1,6 @@
 package com.minsproject.league.entity;
 
-import com.minsproject.league.dto.TeamCreateDTO;
+import com.minsproject.league.controller.request.TeamCreateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,7 +56,7 @@ public class Teams extends BaseEntity {
         this.detailAddress = detailAddress;
     }
 
-    public static Teams fromDto(TeamCreateDTO dto, Sports sports) {
+    public static Teams fromDto(TeamCreateRequest dto, Sports sports) {
         return new Teams(
                 sports,
                 dto.getTeamName(),
