@@ -39,13 +39,11 @@ public class Teams extends BaseEntity {
     @Column(nullable = false)
     private Long status;
 
-    @ManyToOne
-    private Users creator;
+    private String creator;
 
-    @ManyToOne
-    private Users modifier;
+    private String modifier;
 
-    public Teams(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress) {
+    private Teams(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress) {
         this.sports = sports;
         this.teamName = teamName;
         this.description = description;
