@@ -1,11 +1,10 @@
 package com.minsproject.league.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class TeamCreateRequest {
 
     @Schema(description = "종목 코드", nullable = false)
@@ -34,4 +33,17 @@ public class TeamCreateRequest {
 
     @Schema(description = "팀 등록자 id", nullable = false)
     private Long creatorId;
+
+    @Builder
+    private TeamCreateRequest(Long sportsId, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, Long creatorId) {
+        this.sportsId = sportsId;
+        this.teamName = teamName;
+        this.description = description;
+        this.fullAddress = fullAddress;
+        this.city = city;
+        this.town = town;
+        this.dong = dong;
+        this.detailAddress = detailAddress;
+        this.creatorId = creatorId;
+    }
 }
