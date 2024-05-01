@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "팀", description = "팀 API")
 @RequiredArgsConstructor
@@ -21,8 +21,8 @@ public class TeamController {
 
     @GetMapping()
     @Operation(summary = "팀 목록 조회")
-    public Page<TeamsResponse> teamList(Pageable pageable) {
-        return teamService.getTeamList(pageable).map(TeamsResponse::fromEntity);
+    public List<TeamsResponse> teamList(Long offsetId) {
+        return teamService.getTeamList(offsetId).stream().map(TeamsResponse::fromEntity).toList();
     }
 
     @PostMapping()
