@@ -1,6 +1,6 @@
 package com.minsproject.league.entity;
 
-import com.minsproject.league.controller.request.TeamCreateRequest;
+import com.minsproject.league.dto.request.TeamCreateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

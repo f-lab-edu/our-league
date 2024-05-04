@@ -1,4 +1,4 @@
-package com.minsproject.league.controller.request;
+package com.minsproject.league.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

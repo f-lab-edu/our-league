@@ -1,4 +1,4 @@
-package com.minsproject.league.controller.request;
+package com.minsproject.league.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

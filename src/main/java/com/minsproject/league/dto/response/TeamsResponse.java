@@ -1,6 +1,5 @@
-package com.minsproject.league.controller.response;
+package com.minsproject.league.dto.response;
 
-import com.minsproject.league.dto.TeamsDTO;
 import com.minsproject.league.entity.Teams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
