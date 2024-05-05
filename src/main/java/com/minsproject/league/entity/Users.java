@@ -1,7 +1,13 @@
 package com.minsproject.league.entity;
 
+import com.minsproject.league.constant.UserRole;
+import com.minsproject.league.dto.request.JoinRequestDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class Users extends BaseEntity {
 
@@ -24,6 +30,29 @@ public class Users extends BaseEntity {
 
     private String socialLoginId;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.USER;
+
     private Long status;
 
+    private Users(String email, String name, String password, String mobilNumber, String socialLoginType, String socialLoginId) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.mobilNumber = mobilNumber;
+        this.socialLoginType = socialLoginType;
+        this.socialLoginId = socialLoginId;
+    }
+
+    public static Users fromDTO(JoinRequestDTO req, String encodedPassword) {
+        return new Users(
+                req.getEmail(),
+                req.getName(),
+                encodedPassword,
+                req.getMobilNumber(),
+                req.getSocialLoginType(),
+                req.getSocialLoginId()
+        );
+    }
 }
