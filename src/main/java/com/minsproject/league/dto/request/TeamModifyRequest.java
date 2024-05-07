@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public class TeamModifyRequest {
 
+    private Long teamId;
+
     private Long sportsId;
 
     private String teamName;
