@@ -3,7 +3,7 @@ package com.minsproject.league.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class Results extends BaseEntity {
+public class Result extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

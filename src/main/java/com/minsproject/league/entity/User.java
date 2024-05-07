@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Users extends BaseEntity {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Users extends BaseEntity {
 
     private Long status;
 
-    private Users(String email, String name, String password, String mobilNumber, String socialLoginType, String socialLoginId) {
+    private User(String email, String name, String password, String mobilNumber, String socialLoginType, String socialLoginId) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -45,8 +45,8 @@ public class Users extends BaseEntity {
         this.socialLoginId = socialLoginId;
     }
 
-    public static Users fromDTO(JoinRequestDTO req, String encodedPassword) {
-        return new Users(
+    public static User fromDTO(JoinRequestDTO req, String encodedPassword) {
+        return new User(
                 req.getEmail(),
                 req.getName(),
                 encodedPassword,
