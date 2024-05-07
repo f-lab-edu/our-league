@@ -1,8 +1,8 @@
 package com.minsproject.league.entity;
 
 import com.minsproject.league.constant.UserRole;
-import com.minsproject.league.dto.request.JoinRequestDTO;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +36,7 @@ public class User extends BaseEntity {
 
     private Long status;
 
+    @Builder
     private User(String email, String name, String password, String mobilNumber, String socialLoginType, String socialLoginId) {
         this.email = email;
         this.name = name;
@@ -43,16 +44,5 @@ public class User extends BaseEntity {
         this.mobilNumber = mobilNumber;
         this.socialLoginType = socialLoginType;
         this.socialLoginId = socialLoginId;
-    }
-
-    public static User fromDTO(JoinRequestDTO req, String encodedPassword) {
-        return new User(
-                req.getEmail(),
-                req.getName(),
-                encodedPassword,
-                req.getMobilNumber(),
-                req.getSocialLoginType(),
-                req.getSocialLoginId()
-        );
     }
 }

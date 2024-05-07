@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.minsproject.league.dto.UsersDTO;
 import com.minsproject.league.dto.request.JoinRequestDTO;
 import com.minsproject.league.dto.request.LoginRequestDTO;
-import com.minsproject.league.entity.Users;
+import com.minsproject.league.entity.User;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
 import com.minsproject.league.repository.UsersRepository;
@@ -50,6 +50,16 @@ public class UserService {
             throw new LeagueCustomException(ErrorCode.DUPLICATED_USER_EMAIL);
         });
 
-        return usersRepository.save(Users.fromDTO(req, encoder.encode(req.getPassword()))).getUserId();
+        return usersRepository.save(
+                User.builder()
+                        .email(req.getEmail())
+                        .name(req.getName())
+                        .password(encoder.encode(req.getPassword()))
+                        .mobilNumber(req.getMobilNumber())
+                        .socialLoginType(req.getSocialLoginType())
+                        .socialLoginId(req.getSocialLoginId())
+                        .build()
+        ).getUserId();
     }
+
 }
