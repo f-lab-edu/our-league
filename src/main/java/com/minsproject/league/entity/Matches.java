@@ -1,4 +1,4 @@
-package com.minsproject.league.config.entity;
+package com.minsproject.league.entity;
 
 import jakarta.persistence.*;
 
@@ -12,11 +12,11 @@ public class Matches extends BaseEntity {
     private Long matchId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INVITER_TEAM_ID")
-    private Team inviterTeamId;
+    private Teams inviterTeamId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INVITEE_TEAM_ID")
-    private Team inviteeTeamId;
+    private Teams inviteeTeamId;
 
     private String matchLocation;
 

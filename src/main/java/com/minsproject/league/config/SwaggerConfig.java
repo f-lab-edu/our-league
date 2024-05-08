@@ -14,11 +14,13 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         String jwt = "JWT";
+
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
+
         Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme()
                 .name(jwt)
                 .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
+                .scheme("Bearer=")
                 .bearerFormat("JWT")
         );
 
@@ -31,8 +33,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("API TEST")
-                .description("description")
+                .title("LEAGUE API DOC")
+                .description("우리들의 리그 API 문서입니다.")
                 .version("1.0.0");
     }
 }

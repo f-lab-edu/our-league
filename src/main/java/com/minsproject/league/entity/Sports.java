@@ -1,7 +1,9 @@
-package com.minsproject.league.config.entity;
+package com.minsproject.league.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Sports extends BaseEntity {
 
