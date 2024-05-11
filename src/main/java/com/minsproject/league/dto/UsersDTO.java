@@ -2,7 +2,7 @@ package com.minsproject.league.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minsproject.league.constant.UserRole;
-import com.minsproject.league.entity.Users;
+import com.minsproject.league.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -53,7 +53,7 @@ public class UsersDTO implements UserDetails {
         this.modifiedAt = modifiedAt;
     }
 
-    public static UsersDTO fromEntity(Users entity) {
+    public static UsersDTO fromEntity(User entity) {
         return UsersDTO.builder()
                 .userId(entity.getUserId())
                 .email(entity.getEmail())
