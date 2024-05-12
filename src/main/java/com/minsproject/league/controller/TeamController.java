@@ -29,7 +29,7 @@ public class TeamController {
 
     @PostMapping
     @Operation(summary = "팀 목록 조회")
-    @ApiResponse(responseCode = "200", description = "검색 조건에 부합하는 팀 목록을 반환한다")
+    @ApiResponse(responseCode = "200", description = "팀 등록에 성공하면 등록된 ID를 반환한다")
     public Long create(TeamCreateRequest request) {
         return teamService.create(request);
     }
