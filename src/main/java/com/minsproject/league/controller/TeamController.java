@@ -1,6 +1,7 @@
 package com.minsproject.league.controller;
 
 import com.minsproject.league.dto.TeamSearchDTO;
+import com.minsproject.league.dto.request.TeamCreateRequest;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.service.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,13 @@ public class TeamController {
     @ApiResponse(responseCode = "200", description = "검색 조건에 부합하는 팀 목록을 반환한다")
     public List<TeamResponse> teamList(TeamSearchDTO searchDTO) {
         return teamService.getTeamList(searchDTO).stream().map(TeamResponse::fromEntity).toList();
+    }
+
+    @PostMapping
+    @Operation(summary = "팀 목록 조회")
+    @ApiResponse(responseCode = "200", description = "검색 조건에 부합하는 팀 목록을 반환한다")
+    public Long create(TeamCreateRequest request) {
+        return teamService.create(request);
     }
 
 }
