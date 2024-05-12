@@ -1,11 +1,11 @@
 package com.minsproject.league.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class TeamModifyRequest {
+
+    private Long teamId;
 
     private Long sportsId;
 

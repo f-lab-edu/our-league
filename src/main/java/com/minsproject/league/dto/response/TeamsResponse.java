@@ -1,6 +1,6 @@
 package com.minsproject.league.dto.response;
 
-import com.minsproject.league.entity.Teams;
+import com.minsproject.league.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -26,7 +26,7 @@ public class TeamsResponse {
 
     private Long status;
 
-    public static TeamsResponse fromEntity(Teams entity) {
+    public static TeamsResponse fromEntity(Team entity) {
         return new TeamsResponse(
                 entity.getSports().getSportsId(),
                 entity.getSports().getName(),

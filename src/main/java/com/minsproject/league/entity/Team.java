@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Teams extends BaseEntity {
+public class Team extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class Teams extends BaseEntity {
 
     private String modifier;
 
-    private Teams(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress) {
+    private Team(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress) {
         this.sports = sports;
         this.teamName = teamName;
         this.description = description;
@@ -54,8 +54,8 @@ public class Teams extends BaseEntity {
         this.detailAddress = detailAddress;
     }
 
-    public static Teams fromDto(TeamCreateRequest dto, Sports sports) {
-        return new Teams(
+    public static Team fromDto(TeamCreateRequest dto, Sports sports) {
+        return new Team(
                 sports,
                 dto.getTeamName(),
                 dto.getDescription(),

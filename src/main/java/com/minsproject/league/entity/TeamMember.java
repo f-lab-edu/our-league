@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-public class TeamMembers extends BaseEntity {
+public class TeamMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamMemberId;
 
     @ManyToOne
-    private Teams teamId;
+    private Team teamId;
 
     @ManyToOne
-    private Users userId;
+    private User userId;
 
     @Column(nullable = false)
     private String role;
