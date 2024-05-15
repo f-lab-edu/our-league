@@ -1,5 +1,6 @@
 package com.minsproject.league.dto.request;
 
+import com.minsproject.league.entity.User;
 import lombok.Getter;
 
 @Getter
@@ -25,4 +26,20 @@ public class JoinRequestDTO {
         this.socialLoginType = socialLoginType;
         this.socialLoginId = socialLoginId;
     }
+
+    public static User toEntity(JoinRequestDTO req) {
+        return User.builder()
+                .email(req.getEmail())
+                .name(req.getName())
+                .password(req.getPassword())
+                .mobilNumber(req.getMobilNumber())
+                .socialLoginType(req.getSocialLoginType())
+                .socialLoginId(req.getSocialLoginId())
+                .build();
+    }
+
+    public void setPasswordEncoded(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
 }
