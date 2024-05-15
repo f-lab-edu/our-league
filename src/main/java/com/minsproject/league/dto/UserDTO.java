@@ -2,7 +2,7 @@ package com.minsproject.league.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minsproject.league.constant.UserRole;
-import com.minsproject.league.entity.Users;
+import com.minsproject.league.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
-public class UsersDTO implements UserDetails {
+public class UserDTO implements UserDetails {
 
     private Long userId;
 
@@ -39,7 +39,7 @@ public class UsersDTO implements UserDetails {
     private Timestamp modifiedAt;
 
     @Builder
-    private UsersDTO(Long userId, String email, String password, String name, String mobilNumber, String socialLoginType, String socialLoginId, UserRole role, Long status, Timestamp createdAt, Timestamp modifiedAt) {
+    private UserDTO(Long userId, String email, String password, String name, String mobilNumber, String socialLoginType, String socialLoginId, UserRole role, Long status, Timestamp createdAt, Timestamp modifiedAt) {
         this.userId = userId;
         this.email = email;
         this.name = name;
@@ -53,8 +53,8 @@ public class UsersDTO implements UserDetails {
         this.modifiedAt = modifiedAt;
     }
 
-    public static UsersDTO fromEntity(Users entity) {
-        return UsersDTO.builder()
+    public static UserDTO fromEntity(User entity) {
+        return UserDTO.builder()
                 .userId(entity.getUserId())
                 .email(entity.getEmail())
                 .password(entity.getPassword())
