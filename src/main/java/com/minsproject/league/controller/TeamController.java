@@ -28,9 +28,9 @@ public class TeamController {
     }
 
     @PostMapping
-    @Operation(summary = "팀 목록 조회")
+    @Operation(summary = "팀 등록")
     @ApiResponse(responseCode = "200", description = "팀 등록에 성공하면 등록된 ID를 반환한다")
-    public Long create(TeamCreateRequest request) {
+    public Long create(@RequestBody TeamCreateRequest request) {
         return teamService.create(request);
     }
 

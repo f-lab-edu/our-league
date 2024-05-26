@@ -1,5 +1,7 @@
 package com.minsproject.league.dto.request;
 
+import com.minsproject.league.entity.Sports;
+import com.minsproject.league.entity.Team;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,5 +47,18 @@ public class TeamCreateRequest {
         this.dong = dong;
         this.detailAddress = detailAddress;
         this.creator = creator;
+    }
+
+    public static Team toEntity(TeamCreateRequest dto, Sports sports) {
+        return Team.builder()
+                .sports(sports)
+                .teamName(dto.getTeamName())
+                .description(dto.getDescription())
+                .fullAddress(dto.getFullAddress())
+                .city(dto.getCity())
+                .town(dto.getTown())
+                .dong(dto.getDong())
+                .detailAddress(dto.getDetailAddress())
+                .build();
     }
 }

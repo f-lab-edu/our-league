@@ -1,6 +1,5 @@
 package com.minsproject.league.entity;
 
-import com.minsproject.league.dto.request.TeamCreateRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +44,8 @@ public class Team extends BaseEntity {
     private String modifier;
 
     @Builder
-    private Team(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, Long status) {
+    private Team(Long teamId, Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, Long status) {
+        this.teamId = teamId;
         this.sports = sports;
         this.teamName = teamName;
         this.description = description;
@@ -57,27 +57,4 @@ public class Team extends BaseEntity {
         this.status = status;
     }
 
-    private Team(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress) {
-        this.sports = sports;
-        this.teamName = teamName;
-        this.description = description;
-        this.fullAddress = fullAddress;
-        this.city = city;
-        this.town = town;
-        this.dong = dong;
-        this.detailAddress = detailAddress;
-    }
-
-    public static Team fromDto(TeamCreateRequest dto, Sports sports) {
-        return new Team(
-                sports,
-                dto.getTeamName(),
-                dto.getDescription(),
-                dto.getFullAddress(),
-                dto.getCity(),
-                dto.getTown(),
-                dto.getDong(),
-                dto.getDetailAddress()
-        );
-    }
 }

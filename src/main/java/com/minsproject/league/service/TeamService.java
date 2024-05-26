@@ -1,10 +1,10 @@
 package com.minsproject.league.service;
 
 import com.minsproject.league.dto.TeamSearchDTO;
+import com.minsproject.league.dto.request.TeamCreateRequest;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.repository.TeamRepository;
 import com.minsproject.league.entity.Sports;
-import com.minsproject.league.entity.Team;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
 import com.minsproject.league.repository.SportsRepository;
@@ -22,12 +22,11 @@ public class TeamService {
 
     public List<TeamResponse> getTeamList(TeamSearchDTO searchDTO) {
         return teamRepository.findByTeamIdGreaterThanOffsetId(searchDTO).stream().map(TeamResponse::fromEntity).toList();
-        return teamRepository.findByTeamIdGreaterThanOffsetId(searchDTO).stream().map(TeamResponse::fromEntity).toList();
     }
 
     public Long create(TeamCreateRequest request) {
         Sports sports = sportsRepository.findById(request.getSportsId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.SPORTS_NOT_FOUND));
 
-        return teamRepository.save(Team.fromDto(request, sports)).getTeamId();
+        return teamRepository.save(TeamCreateRequest.toEntity(request, sports)).getTeamId();
     }
 }
