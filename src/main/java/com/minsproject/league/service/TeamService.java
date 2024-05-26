@@ -2,7 +2,7 @@ package com.minsproject.league.service;
 
 import com.minsproject.league.dto.TeamSearchDTO;
 import com.minsproject.league.dto.response.TeamResponse;
-import com.minsproject.league.repository.TeamsRepository;
+import com.minsproject.league.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +12,9 @@ import java.util.List;
 @Service
 public class TeamService {
 
-    private final TeamsRepository teamsRepository;
+    private final TeamRepository teamRepository;
 
     public List<TeamResponse> getTeamList(TeamSearchDTO searchDTO) {
-        return teamsRepository.findByTeamIdGreaterThanOffsetId(searchDTO).stream().map(TeamResponse::fromEntity).toList();
+        return teamRepository.findByTeamIdGreaterThanOffsetId(searchDTO).stream().map(TeamResponse::fromEntity).toList();
     }
 }
