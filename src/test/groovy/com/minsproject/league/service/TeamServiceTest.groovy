@@ -1,9 +1,13 @@
 package com.minsproject.league.service
 
 import com.minsproject.league.dto.TeamSearchDTO
+import com.minsproject.league.dto.request.TeamCreateRequest
 import com.minsproject.league.dto.response.TeamResponse
 import com.minsproject.league.entity.Sports
 import com.minsproject.league.entity.Team
+import com.minsproject.league.exception.ErrorCode
+import com.minsproject.league.exception.LeagueCustomException
+import com.minsproject.league.repository.SportsRepository
 import com.minsproject.league.repository.TeamRepository
 import spock.lang.Specification
 import spock.lang.Subject
@@ -12,8 +16,10 @@ class TeamServiceTest extends Specification {
 
     def teamRepository = Mock(TeamRepository)
 
+    def sportsRepository = Mock(SportsRepository)
+
     @Subject
-    def teamService = new TeamService(teamRepository)
+    def teamService = new TeamService(teamRepository, sportsRepository)
 
     def "TeamSearchDTO의 pageSize가 없으면 10을 기본값으로 잡는다"() {
 
@@ -54,6 +60,46 @@ class TeamServiceTest extends Specification {
 
         then: "반환된 팀 목록이 예상 결과와 일치"
         result == expectedResponse
+    }
 
+    def "팀 등록 시 존재하지 않는 종목이면 예외가 발생한다"() {
+
+        given:
+        def teamCreateReq = TeamCreateRequest.builder().sportsId(999).build()
+        sportsRepository.findById(teamCreateReq.sportsId) >> Optional.empty()
+
+        when:
+        teamService.create(teamCreateReq)
+
+        then:
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.SPORTS_NOT_FOUND
+
+    }
+
+    def "팀 등록 성공"() {
+
+        given:
+        def teamCreateReq = TeamCreateRequest.builder()
+                .sportsId(1L)
+                .teamName("test Team")
+                .description("")
+                .city("서울시")
+                .town("마포구")
+                .dong("합정동")
+                .detailAddress("123-1")
+                .fullAddress("서울시 마포구 합정동 123-1")
+                .build()
+        def sports = Sports.builder().sportsId(1L).name("축구").build()
+        def team = Team.builder().teamId(1L).build()
+
+        sportsRepository.findById(teamCreateReq.sportsId) >> Optional.of(sports)
+        teamRepository.save(_ as Team) >> team
+
+        when:
+        def teamId = teamService.create(teamCreateReq)
+
+        then:
+        teamId == 1L
     }
 }
