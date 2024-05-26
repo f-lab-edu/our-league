@@ -5,7 +5,7 @@ import com.minsproject.league.entity.Team;
 
 import java.util.List;
 
-public interface TeamsCustomRepository {
+public interface TeamCustomRepository {
 
     List<Team> findByTeamIdGreaterThanOffsetId(TeamSearchDTO searchDTO);
 }
