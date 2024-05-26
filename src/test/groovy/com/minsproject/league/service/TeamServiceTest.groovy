@@ -1,7 +1,9 @@
 package com.minsproject.league.service
 
 import com.minsproject.league.dto.TeamSearchDTO
-import com.minsproject.league.repository.SportsRepository
+import com.minsproject.league.dto.response.TeamResponse
+import com.minsproject.league.entity.Sports
+import com.minsproject.league.entity.Team
 import com.minsproject.league.repository.TeamRepository
 import spock.lang.Specification
 import spock.lang.Subject
@@ -9,10 +11,9 @@ import spock.lang.Subject
 class TeamServiceTest extends Specification {
 
     def teamRepository = Mock(TeamRepository)
-    def sportRepository = Mock(SportsRepository)
 
     @Subject
-    def teamService = new TeamService(teamRepository, sportRepository)
+    def teamService = new TeamService(teamRepository)
 
     def "TeamSearchDTO의 pageSize가 없으면 10을 기본값으로 잡는다"() {
 
@@ -30,5 +31,29 @@ class TeamServiceTest extends Specification {
 
         expect: "pageSize는 20으로 잡혀야한다"
         20 == searchDTO.getPageSize()
+    }
+
+    def "getTeamList는 TeamSearchDTO를 기반으로 팀 목록을 반환한다"() {
+
+        given:
+        def sports = Sports.builder().sportsId(1).name("축구").build()
+        def searchDTO = TeamSearchDTO.of(2, 100)
+        def teamEntities = [
+                Team.builder()
+                        .sports(sports).teamName("teamA").description("team").fullAddress("full Address").city("seoul").town("town").dong("dong").status(1).build(),
+                Team.builder()
+                        .sports(sports).teamName("teamA").description("team").fullAddress("full Address").city("seoul").town("town").dong("dong").status(1).build()
+        ]
+        def expectedResponse = teamEntities.collect() { TeamResponse.fromEntity(it) }
+
+        and: "teamRepository가 searchDTO 조건에 맞는 팀 목록을 반환하도록 설정"
+        teamRepository.findByTeamIdGreaterThanOffsetId(searchDTO) >> teamEntities
+
+        when: "getTeamList 메서드를 호출"
+        def result = teamService.getTeamList(searchDTO)
+
+        then: "반환된 팀 목록이 예상 결과와 일치"
+        result == expectedResponse
+
     }
 }
