@@ -1,13 +1,22 @@
 package com.minsproject.league.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class TeamSearchDTO {
 
-    private Integer pageSize = 10;
+    private Integer pageSize;
 
     private Long offsetId;
+
+    private TeamSearchDTO(Integer pageSize, Long offsetId) {
+        this.pageSize = pageSize;
+        this.offsetId = offsetId;
+    }
+
+    public static TeamSearchDTO of(Integer pageSize, Long offsetId) {
+        pageSize = pageSize == null ? 10 : pageSize;
+
+        return new TeamSearchDTO(pageSize, offsetId);
+    }
 }
