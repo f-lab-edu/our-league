@@ -1,4 +1,4 @@
-package com.minsproject.league.controller.response;
+package com.minsproject.league.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
