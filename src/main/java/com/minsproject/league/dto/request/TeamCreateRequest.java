@@ -59,6 +59,7 @@ public class TeamCreateRequest {
                 .town(dto.getTown())
                 .dong(dto.getDong())
                 .detailAddress(dto.getDetailAddress())
+                .status(1L)
                 .build();
     }
 }
