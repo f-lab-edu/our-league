@@ -45,4 +45,12 @@ public class User extends BaseEntity {
         this.socialLoginType = socialLoginType;
         this.socialLoginId = socialLoginId;
     }
+
+    private User(Long userId) {
+        this.userId = userId;
+    }
+
+    public static User makeUserForSearch(Long userId) {
+        return new User(userId);
+    }
 }

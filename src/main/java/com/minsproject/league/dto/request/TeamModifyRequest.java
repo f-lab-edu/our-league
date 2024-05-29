@@ -5,8 +5,6 @@ import lombok.Getter;
 @Getter
 public class TeamModifyRequest {
 
-    private Long teamId;
-
     private Long sportsId;
 
     private String teamName;
@@ -19,5 +17,6 @@ public class TeamModifyRequest {
 
     private Long status;
 
-    private Long modifierId;
+    private String modifier;
+
 }

@@ -1,13 +1,16 @@
 package com.minsproject.league.controller;
 
 import com.minsproject.league.dto.TeamSearchDTO;
+import com.minsproject.league.dto.UserDTO;
 import com.minsproject.league.dto.request.TeamCreateRequest;
+import com.minsproject.league.dto.request.TeamModifyRequest;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.service.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +35,12 @@ public class TeamController {
     @ApiResponse(responseCode = "200", description = "팀 등록에 성공하면 등록된 ID를 반환한다")
     public Long create(@RequestBody TeamCreateRequest request) {
         return teamService.create(request);
+    }
+
+    @PutMapping("/{teamId}")
+    public TeamResponse modify(@PathVariable Long teamId, @RequestBody TeamModifyRequest request, Authentication authentication) {
+        UserDTO principal = (UserDTO) authentication.getPrincipal();
+        return teamService.modify(teamId, request, principal);
     }
 
 }

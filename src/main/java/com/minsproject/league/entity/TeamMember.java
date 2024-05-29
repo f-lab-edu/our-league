@@ -1,9 +1,13 @@
 package com.minsproject.league.entity;
 
+import com.minsproject.league.constant.TeamMemberRole;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@NoArgsConstructor
 @Entity
 public class TeamMember extends BaseEntity {
 
@@ -17,11 +21,14 @@ public class TeamMember extends BaseEntity {
     @ManyToOne
     private User userId;
 
+    @Getter
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private TeamMemberRole role;
 
+    @Getter
     @Column(nullable = false)
     private Long status;
 
-    private Timestamp status_changed_at;
+    private Timestamp statusChangedAt;
 }

@@ -16,9 +16,12 @@ public enum ErrorCode {
 
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "회원이나 비밀번호를 확인해주세요."),
 
-    DUPLICATED_USER_EMAIL(HttpStatus.CONFLICT, "이미 가입한 이메일입니다.")
+    MODIFICATION_NOT_ALLOWED(HttpStatus.UNAUTHORIZED, "수정할 수 없습니다."),
 
-    ;
+    DUPLICATED_USER_EMAIL(HttpStatus.CONFLICT, "이미 가입한 이메일입니다."),
+
+    TEAM_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "팀 멤버를 찾을 수 없어요.");
+
     private HttpStatus status;
     private String message;
 }

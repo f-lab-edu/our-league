@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionController {
 
     @ExceptionHandler(LeagueCustomException.class)
-    public ResponseEntity<?> applicationHandler(LeagueCustomException e) {
+    public ResponseEntity<Response<Void>> applicationHandler(LeagueCustomException e) {
         log.error("Exception occurs {}", e.toString());
         return ResponseEntity.status(e.getErrorCode().getStatus())
                 .body(Response.error(e.getErrorCode().name()));
