@@ -1,5 +1,6 @@
 package com.minsproject.league.dto.request;
 
+import com.minsproject.league.constant.status.TeamStatus;
 import com.minsproject.league.entity.Sports;
 import com.minsproject.league.entity.Team;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,7 +60,7 @@ public class TeamCreateRequest {
                 .town(dto.getTown())
                 .dong(dto.getDong())
                 .detailAddress(dto.getDetailAddress())
-                .status(1L)
+                .status(TeamStatus.ACCEPTING)
                 .build();
     }
 }

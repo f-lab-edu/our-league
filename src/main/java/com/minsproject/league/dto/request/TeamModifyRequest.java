@@ -1,5 +1,6 @@
 package com.minsproject.league.dto.request;
 
+import com.minsproject.league.constant.status.TeamStatus;
 import lombok.Getter;
 
 @Getter
@@ -15,7 +16,7 @@ public class TeamModifyRequest {
 
     private String detailAddress;
 
-    private Long status;
+    private TeamStatus status;
 
     private String modifier;
 
