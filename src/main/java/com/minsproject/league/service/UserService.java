@@ -6,7 +6,7 @@ import com.minsproject.league.dto.request.JoinRequestDTO;
 import com.minsproject.league.dto.request.LoginRequestDTO;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
-import com.minsproject.league.repository.UsersRepository;
+import com.minsproject.league.repository.UserRepository;
 import com.minsproject.league.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder encoder;
 
@@ -30,7 +30,7 @@ public class UserService {
     private Long expiredTimeMs;
 
     public UserDTO loadUserByUserEmail(String email) {
-        return usersRepository.findByEmail(email).map(UserDTO::fromEntity).orElseThrow(() -> new LeagueCustomException(ErrorCode.USER_NOT_FOUND));
+        return userRepository.findByEmail(email).map(UserDTO::fromEntity).orElseThrow(() -> new LeagueCustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     public String login(LoginRequestDTO req) {
@@ -45,11 +45,11 @@ public class UserService {
 
     @Transactional
     public Long join(JoinRequestDTO req) {
-        usersRepository.findByEmail(req.getEmail()).ifPresent(it -> {
+        userRepository.findByEmail(req.getEmail()).ifPresent(it -> {
             throw new LeagueCustomException(ErrorCode.DUPLICATED_USER_EMAIL);
         });
         req.setPasswordEncoded(encoder.encode(req.getPassword()));
-        return usersRepository.save(JoinRequestDTO.toEntity(req)).getUserId();
+        return userRepository.save(JoinRequestDTO.toEntity(req)).getUserId();
     }
 
 }
