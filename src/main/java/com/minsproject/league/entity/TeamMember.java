@@ -2,6 +2,7 @@ package com.minsproject.league.entity;
 
 import com.minsproject.league.constant.TeamMemberRole;
 import com.minsproject.league.constant.status.TeamMemberStatus;
+import com.minsproject.league.dto.TeamMemberDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,11 +10,11 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@Getter
 @NoArgsConstructor
 @Entity
 public class TeamMember extends BaseEntity {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamMemberId;
@@ -22,17 +23,14 @@ public class TeamMember extends BaseEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Getter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TeamMemberRole role;
 
-    @Getter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TeamMemberStatus status;
@@ -45,5 +43,11 @@ public class TeamMember extends BaseEntity {
         this.user = user;
         this.role = role;
         this.status = status;
+    }
+
+    public void modify(TeamMemberDTO dto) {
+        this.role = TeamMemberRole.valueOf(dto.getRole().toUpperCase());
+        this.status = TeamMemberStatus.valueOf(dto.getStatus().toUpperCase());
+        this.statusChangedAt = new Timestamp(System.currentTimeMillis());
     }
 }
