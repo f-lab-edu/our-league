@@ -1,10 +1,13 @@
 package com.minsproject.league.entity;
 
+import com.minsproject.league.constant.status.TeamStatus;
 import com.minsproject.league.dto.request.TeamModifyRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -38,14 +41,18 @@ public class Team extends BaseEntity {
     private String detailAddress; //상세주소
 
     @Column(nullable = false)
-    private Long status;
+    @Enumerated(EnumType.STRING)
+    private TeamStatus status;
 
     private String creator;
 
     private String modifier;
 
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    private List<TeamMember> teamMembers;
+
     @Builder
-    private Team(Long teamId, Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, Long status, String creator) {
+    private Team(Long teamId, Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, TeamStatus status, String creator) {
         this.teamId = teamId;
         this.sports = sports;
         this.teamName = teamName;
