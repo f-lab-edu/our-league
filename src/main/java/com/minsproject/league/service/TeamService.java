@@ -38,7 +38,7 @@ public class TeamService {
     }
 
     public TeamResponse modify(Long teamId, TeamModifyRequest request, UserDTO user) {
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
+        Team team = getTeamOrThrow(teamId);
 
         TeamMember member = teamMemberRepository.findByTeamIdAndUserId(team, UserDTO.toEntity(user)).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
         if (member.getRole() != TeamMemberRole.OWNER) {
@@ -50,5 +50,22 @@ public class TeamService {
         team.modifyTeam(request, sports, user.getName());
 
         return TeamResponse.fromEntity(teamRepository.save(team));
+    }
+
+    public void delete(Long teamId, UserDTO user) {
+        Team team = getTeamOrThrow(teamId);
+
+        TeamMember member = teamMemberRepository.findByTeamIdAndUserId(team, UserDTO.toEntity(user)).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+        if (member.getRole() != TeamMemberRole.OWNER) {
+            throw new LeagueCustomException(ErrorCode.DELETING_NOT_ALLOWED);
+        }
+
+        team.softDelete();
+
+        teamRepository.save(team);
+    }
+
+    private Team getTeamOrThrow(Long teamId) {
+        return teamRepository.findById(teamId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
     }
 }
