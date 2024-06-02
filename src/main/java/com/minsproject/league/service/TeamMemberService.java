@@ -5,6 +5,7 @@ import com.minsproject.league.constant.status.TeamMemberStatus;
 import com.minsproject.league.constant.status.TeamStatus;
 import com.minsproject.league.dto.TeamMemberDTO;
 import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.response.TeamMemberResponse;
 import com.minsproject.league.entity.Team;
 import com.minsproject.league.entity.TeamMember;
 import com.minsproject.league.exception.ErrorCode;
@@ -40,5 +41,20 @@ public class TeamMemberService {
         TeamMember saved = teamMemberRepository.save(TeamMemberDTO.toEntity(team, UserDTO.toEntity(user), TeamMemberRole.NORMAL, TeamMemberStatus.NORMAL));
 
         return saved.getTeamMemberId();
+    }
+
+    public TeamMemberResponse modify(TeamMemberDTO teamMemberDTO, UserDTO user) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberDTO.getTeamMemberId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+
+        boolean isOwner = Objects.equals(teamMember.getRole(), TeamMemberRole.OWNER);
+        boolean isMyself = Objects.equals(teamMember.getUser().getUserId(), user.getUserId());
+        if (isOwner || isMyself) {
+            teamMember.modify(teamMemberDTO);
+
+            return TeamMemberResponse.fromEntity(teamMemberRepository.save(teamMember));
+        }
+
+        throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
+
     }
 }
