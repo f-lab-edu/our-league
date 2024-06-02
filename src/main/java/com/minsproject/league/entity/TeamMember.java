@@ -1,7 +1,9 @@
 package com.minsproject.league.entity;
 
 import com.minsproject.league.constant.TeamMemberRole;
+import com.minsproject.league.constant.status.TeamMemberStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,15 +13,19 @@ import java.sql.Timestamp;
 @Entity
 public class TeamMember extends BaseEntity {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamMemberId;
 
     @ManyToOne
-    private Team teamId;
+    @JoinColumn(name = "team_id")
+    private Team team;
 
+    @Getter
     @ManyToOne
-    private User userId;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Getter
     @Column(nullable = false)
@@ -28,7 +34,16 @@ public class TeamMember extends BaseEntity {
 
     @Getter
     @Column(nullable = false)
-    private Long status;
+    @Enumerated(EnumType.STRING)
+    private TeamMemberStatus status;
 
     private Timestamp statusChangedAt;
+
+    @Builder
+    private TeamMember(Team team, User user, TeamMemberRole role, TeamMemberStatus status) {
+        this.team = team;
+        this.user = user;
+        this.role = role;
+        this.status = status;
+    }
 }
