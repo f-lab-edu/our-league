@@ -40,7 +40,7 @@ public class TeamService {
     public TeamResponse modify(Long teamId, TeamModifyRequest request, UserDTO user) {
         Team team = getTeamOrThrow(teamId);
 
-        TeamMember member = teamMemberRepository.findByTeamIdAndUserId(team, UserDTO.toEntity(user)).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+        TeamMember member = teamMemberRepository.findByTeamAndUser(team, UserDTO.toEntity(user)).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
         if (member.getRole() != TeamMemberRole.OWNER) {
             throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
         }
@@ -55,7 +55,7 @@ public class TeamService {
     public void delete(Long teamId, UserDTO user) {
         Team team = getTeamOrThrow(teamId);
 
-        TeamMember member = teamMemberRepository.findByTeamIdAndUserId(team, UserDTO.toEntity(user)).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+        TeamMember member = teamMemberRepository.findByTeamAndUser(team, UserDTO.toEntity(user)).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
         if (member.getRole() != TeamMemberRole.OWNER) {
             throw new LeagueCustomException(ErrorCode.DELETING_NOT_ALLOWED);
         }
