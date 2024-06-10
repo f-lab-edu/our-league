@@ -4,7 +4,7 @@ import com.minsproject.league.entity.User;
 import lombok.Getter;
 
 @Getter
-public class JoinRequestDTO {
+public class JoinRequest {
 
     private String email;
 
@@ -18,7 +18,7 @@ public class JoinRequestDTO {
 
     private String socialLoginId;
 
-    public JoinRequestDTO(String email, String name, String password, String mobilNumber, String socialLoginType, String socialLoginId) {
+    public JoinRequest(String email, String name, String password, String mobilNumber, String socialLoginType, String socialLoginId) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -27,7 +27,7 @@ public class JoinRequestDTO {
         this.socialLoginId = socialLoginId;
     }
 
-    public static User toEntity(JoinRequestDTO req) {
+    public static User toEntity(JoinRequest req) {
         return User.builder()
                 .email(req.getEmail())
                 .name(req.getName())
