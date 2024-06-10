@@ -1,7 +1,7 @@
 package com.minsproject.league.controller;
 
-import com.minsproject.league.dto.request.JoinRequestDTO;
-import com.minsproject.league.dto.request.LoginRequestDTO;
+import com.minsproject.league.dto.request.JoinRequest;
+import com.minsproject.league.dto.request.LoginRequest;
 import com.minsproject.league.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +17,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDTO req) {
+    public String login(@RequestBody LoginRequest req) {
         return userService.login(req);
     }
 
     @PostMapping("/join")
-    public Long join(@RequestBody JoinRequestDTO req) {
+    public Long join(@RequestBody JoinRequest req) {
         return userService.join(req);
     }
 }
