@@ -13,7 +13,6 @@ import com.minsproject.league.repository.TeamRepository;
 import com.minsproject.league.entity.Sports;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
-import com.minsproject.league.repository.SportsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final SportsRepository sportsRepository;
+    private final SportsService sportsService;
     private final TeamMemberRepository teamMemberRepository;
 
     public List<TeamResponse> getTeamList(TeamSearchDTO searchDTO) {
@@ -32,7 +31,7 @@ public class TeamService {
     }
 
     public Long create(TeamCreateRequest request) {
-        Sports sports = sportsRepository.findById(request.getSportsId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.SPORTS_NOT_FOUND));
+        Sports sports = sportsService.getSportsById(request.getSportsId());
 
         return teamRepository.save(TeamCreateRequest.toEntity(request, sports)).getTeamId();
     }
@@ -45,7 +44,7 @@ public class TeamService {
             throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
         }
 
-        Sports sports = sportsRepository.findById(request.getSportsId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.SPORTS_NOT_FOUND));
+        Sports sports = sportsService.getSportsById(request.getSportsId());
 
         team.modifyTeam(request, sports, user.getName());
 
