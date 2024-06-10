@@ -138,7 +138,7 @@ class TeamServiceTest extends Specification {
         def user = new User(userId: 1L)
         def teamMember = new TeamMember(teamMemberId: 1L, role: TeamMemberRole.NORMAL)
         teamRepository.findById(teamId) >> Optional.of(team)
-        teamMemberRepository.findByTeamAndUser(team, user) >> Optional.of(teamMember)
+        teamMemberRepository.findByTeamIdAndUserId(teamId, user.getUserId()) >> Optional.of(teamMember)
 
         when:
         teamService.modify(teamId, teamModifyRequest, userDTO)
@@ -158,7 +158,7 @@ class TeamServiceTest extends Specification {
         def user = new User(userId: 1L)
         def teamMember = new TeamMember(teamMemberId: 1L, role: TeamMemberRole.NORMAL)
         teamRepository.findById(teamId) >> Optional.of(team)
-        teamMemberRepository.findByTeamAndUser(team, user) >> Optional.of(teamMember)
+        teamMemberRepository.findByTeamIdAndUserId(teamId, user.getUserId()) >> Optional.of(teamMember)
         sportsRepository.findById(teamModifyRequest.sportsId) >> Optional.empty()
 
         when:
