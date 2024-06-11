@@ -70,10 +70,6 @@ public class UserDTO implements UserDetails {
                 .build();
     }
 
-    public static User toEntity(UserDTO dto) {
-        return User.makeUserForSearch(dto.getUserId());
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));

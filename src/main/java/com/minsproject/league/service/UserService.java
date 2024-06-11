@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.minsproject.league.dto.UserDTO;
 import com.minsproject.league.dto.request.JoinRequest;
 import com.minsproject.league.dto.request.LoginRequest;
+import com.minsproject.league.entity.User;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
 import com.minsproject.league.repository.UserRepository;
@@ -52,4 +53,7 @@ public class UserService {
         return userRepository.save(JoinRequest.toEntity(req)).getUserId();
     }
 
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new LeagueCustomException(ErrorCode.USER_NOT_FOUND));
+    }
 }

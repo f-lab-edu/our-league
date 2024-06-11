@@ -8,6 +8,7 @@ import com.minsproject.league.dto.UserDTO;
 import com.minsproject.league.dto.response.TeamMemberResponse;
 import com.minsproject.league.entity.Team;
 import com.minsproject.league.entity.TeamMember;
+import com.minsproject.league.entity.User;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
 import com.minsproject.league.repository.TeamMemberRepository;
@@ -21,6 +22,8 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class TeamMemberService {
+
+    private final UserService userService;
 
     private final TeamRepository teamRepository;
 
@@ -38,7 +41,9 @@ public class TeamMemberService {
             throw new LeagueCustomException(ErrorCode.ALREADY_IN_TEAM);
         }
 
-        TeamMember saved = teamMemberRepository.save(TeamMemberDTO.toEntity(team, UserDTO.toEntity(user), TeamMemberRole.NORMAL, TeamMemberStatus.NORMAL));
+        User userInfo = userService.getUserById(user.getUserId());
+
+        TeamMember saved = teamMemberRepository.save(TeamMemberDTO.toEntity(team, userInfo, TeamMemberRole.NORMAL, TeamMemberStatus.NORMAL));
 
         return saved.getTeamMemberId();
     }
