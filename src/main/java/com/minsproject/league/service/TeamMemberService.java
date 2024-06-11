@@ -15,6 +15,7 @@ import com.minsproject.league.repository.TeamMemberRepository;
 import com.minsproject.league.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +58,22 @@ public class TeamMemberService {
             teamMember.modify(teamMemberDTO);
 
             return TeamMemberResponse.fromEntity(teamMemberRepository.save(teamMember));
+        }
+
+        throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
+
+    }
+
+    @Transactional
+    public void delete(Long teamMemberId, UserDTO userDTO) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+
+        boolean isOwner = Objects.equals(teamMember.getRole(), TeamMemberRole.OWNER);
+        boolean isMyself = Objects.equals(teamMember.getUser().getUserId(), userDTO.getUserId());
+        if (isOwner || isMyself) {
+            teamMember.softDelete();
+
+            teamMemberRepository.save(teamMember);
         }
 
         throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);

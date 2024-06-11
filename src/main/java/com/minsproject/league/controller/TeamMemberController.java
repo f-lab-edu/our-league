@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "팀 멤버", description = "팀 멤버 API")
@@ -33,5 +34,10 @@ public class TeamMemberController {
     public TeamMemberResponse modify(@RequestBody TeamMemberDTO teamMemberDTO, Authentication authentication) {
         UserDTO principal = (UserDTO) authentication.getPrincipal();
         return teamMemberService.modify(teamMemberDTO, principal);
+    }
+
+    @DeleteMapping("/{teamMemberId}")
+    public void delete(@PathVariable Long teamMemberId, @AuthenticationPrincipal UserDTO user) {
+        teamMemberService.delete(teamMemberId, user);
     }
 }
