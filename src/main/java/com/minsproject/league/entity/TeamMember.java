@@ -1,9 +1,17 @@
 package com.minsproject.league.entity;
 
+import com.minsproject.league.constant.TeamMemberRole;
+import com.minsproject.league.constant.status.TeamMemberStatus;
+import com.minsproject.league.dto.TeamMemberDTO;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class TeamMember extends BaseEntity {
 
@@ -12,16 +20,34 @@ public class TeamMember extends BaseEntity {
     private Long teamMemberId;
 
     @ManyToOne
-    private Team teamId;
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @ManyToOne
-    private User userId;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private TeamMemberRole role;
 
     @Column(nullable = false)
-    private Long status;
+    @Enumerated(EnumType.STRING)
+    private TeamMemberStatus status;
 
-    private Timestamp status_changed_at;
+    private Timestamp statusChangedAt;
+
+    @Builder
+    private TeamMember(Team team, User user, TeamMemberRole role, TeamMemberStatus status) {
+        this.team = team;
+        this.user = user;
+        this.role = role;
+        this.status = status;
+    }
+
+    public void modify(TeamMemberDTO dto) {
+        this.role = TeamMemberRole.valueOf(dto.getRole().toUpperCase());
+        this.status = TeamMemberStatus.valueOf(dto.getStatus().toUpperCase());
+        this.statusChangedAt = new Timestamp(System.currentTimeMillis());
+    }
 }

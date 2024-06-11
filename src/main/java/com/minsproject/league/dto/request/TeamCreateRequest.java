@@ -1,5 +1,8 @@
 package com.minsproject.league.dto.request;
 
+import com.minsproject.league.constant.status.TeamStatus;
+import com.minsproject.league.entity.Sports;
+import com.minsproject.league.entity.Team;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,11 +34,11 @@ public class TeamCreateRequest {
     @Schema(description = "상세 주소", nullable = false)
     private String detailAddress;
 
-    @Schema(description = "팀 등록자 id", nullable = false)
-    private Long creatorId;
+    @Schema(description = "팀 등록자 이름", nullable = false)
+    private String creator;
 
     @Builder
-    private TeamCreateRequest(Long sportsId, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, Long creatorId) {
+    private TeamCreateRequest(Long sportsId, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, String creator) {
         this.sportsId = sportsId;
         this.teamName = teamName;
         this.description = description;
@@ -44,6 +47,20 @@ public class TeamCreateRequest {
         this.town = town;
         this.dong = dong;
         this.detailAddress = detailAddress;
-        this.creatorId = creatorId;
+        this.creator = creator;
+    }
+
+    public static Team toEntity(TeamCreateRequest dto, Sports sports) {
+        return Team.builder()
+                .sports(sports)
+                .teamName(dto.getTeamName())
+                .description(dto.getDescription())
+                .fullAddress(dto.getFullAddress())
+                .city(dto.getCity())
+                .town(dto.getTown())
+                .dong(dto.getDong())
+                .detailAddress(dto.getDetailAddress())
+                .status(TeamStatus.ACCEPTING)
+                .build();
     }
 }

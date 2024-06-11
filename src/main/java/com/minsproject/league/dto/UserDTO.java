@@ -5,6 +5,7 @@ import com.minsproject.league.constant.UserRole;
 import com.minsproject.league.entity.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
-public class UsersDTO implements UserDetails {
+@NoArgsConstructor
+public class UserDTO implements UserDetails {
 
     private Long userId;
 
@@ -24,7 +26,7 @@ public class UsersDTO implements UserDetails {
 
     private String password;
 
-    private String mobilNumber;
+    private String mobileNumber;
 
     private String socialLoginType;
 
@@ -39,12 +41,12 @@ public class UsersDTO implements UserDetails {
     private Timestamp modifiedAt;
 
     @Builder
-    private UsersDTO(Long userId, String email, String password, String name, String mobilNumber, String socialLoginType, String socialLoginId, UserRole role, Long status, Timestamp createdAt, Timestamp modifiedAt) {
+    private UserDTO(Long userId, String email, String password, String name, String mobileNumber, String socialLoginType, String socialLoginId, UserRole role, Long status, Timestamp createdAt, Timestamp modifiedAt) {
         this.userId = userId;
         this.email = email;
         this.name = name;
         this.password = password;
-        this.mobilNumber = mobilNumber;
+        this.mobileNumber = mobileNumber;
         this.socialLoginType = socialLoginType;
         this.socialLoginId = socialLoginId;
         this.role = role;
@@ -53,12 +55,12 @@ public class UsersDTO implements UserDetails {
         this.modifiedAt = modifiedAt;
     }
 
-    public static UsersDTO fromEntity(User entity) {
-        return UsersDTO.builder()
+    public static UserDTO fromEntity(User entity) {
+        return UserDTO.builder()
                 .userId(entity.getUserId())
                 .email(entity.getEmail())
                 .password(entity.getPassword())
-                .mobilNumber(entity.getMobilNumber())
+                .mobileNumber(entity.getMobilNumber())
                 .socialLoginType(entity.getSocialLoginType())
                 .socialLoginId(entity.getSocialLoginId())
                 .role(entity.getRole())
@@ -115,7 +117,7 @@ public class UsersDTO implements UserDetails {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", mobilNumber='" + mobilNumber + '\'' +
+                ", mobilNumber='" + mobileNumber + '\'' +
                 ", socialLoginType='" + socialLoginType + '\'' +
                 ", socialLoginId='" + socialLoginId + '\'' +
                 ", role=" + role +

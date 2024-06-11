@@ -1,10 +1,13 @@
 package com.minsproject.league.entity;
 
-import com.minsproject.league.dto.request.TeamCreateRequest;
+import com.minsproject.league.constant.status.TeamStatus;
+import com.minsproject.league.dto.request.TeamModifyRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -38,14 +41,19 @@ public class Team extends BaseEntity {
     private String detailAddress; //상세주소
 
     @Column(nullable = false)
-    private Long status;
+    @Enumerated(EnumType.STRING)
+    private TeamStatus status;
 
     private String creator;
 
     private String modifier;
 
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    private List<TeamMember> teamMembers;
+
     @Builder
-    private Team(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, Long status) {
+    private Team(Long teamId, Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, TeamStatus status, String creator) {
+        this.teamId = teamId;
         this.sports = sports;
         this.teamName = teamName;
         this.description = description;
@@ -55,29 +63,17 @@ public class Team extends BaseEntity {
         this.dong = dong;
         this.detailAddress = detailAddress;
         this.status = status;
+        this.creator = creator;
     }
 
-    private Team(Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress) {
+    public void modifyTeam(TeamModifyRequest dto, Sports sports, String username) {
+        this.teamName = dto.getTeamName();
+        this.description = dto.getDescription();
         this.sports = sports;
-        this.teamName = teamName;
-        this.description = description;
-        this.fullAddress = fullAddress;
-        this.city = city;
-        this.town = town;
-        this.dong = dong;
-        this.detailAddress = detailAddress;
+        this.dong = dto.getDong();
+        this.detailAddress = dto.getDetailAddress();
+        this.status = dto.getStatus();
+        this.modifier = username;
     }
 
-    public static Team fromDto(TeamCreateRequest dto, Sports sports) {
-        return new Team(
-                sports,
-                dto.getTeamName(),
-                dto.getDescription(),
-                dto.getFullAddress(),
-                dto.getCity(),
-                dto.getTown(),
-                dto.getDong(),
-                dto.getDetailAddress()
-        );
-    }
 }

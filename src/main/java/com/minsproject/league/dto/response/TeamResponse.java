@@ -1,5 +1,6 @@
 package com.minsproject.league.dto.response;
 
+import com.minsproject.league.constant.status.TeamStatus;
 import com.minsproject.league.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class TeamResponse {
 
     private String dong;
 
-    private Long status;
+    private TeamStatus status;
 
     public static TeamResponse fromEntity(Team entity) {
         return new TeamResponse(
