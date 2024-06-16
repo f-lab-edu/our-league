@@ -8,4 +8,6 @@ import java.util.List;
 public interface TeamCustomRepository {
 
     List<Team> findByTeamIdGreaterThanOffsetId(TeamSearchDTO searchDTO);
+
+    List<Team> findTeamsForMatch(TeamSearchDTO searchDTO);
 }
