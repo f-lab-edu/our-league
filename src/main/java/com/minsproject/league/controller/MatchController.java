@@ -1,10 +1,14 @@
 package com.minsproject.league.controller;
 
+import com.minsproject.league.dto.MatchDTO;
 import com.minsproject.league.dto.TeamSearchDTO;
+import com.minsproject.league.dto.UserDTO;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.service.MatchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +24,10 @@ public class MatchController {
     @GetMapping
     public List<TeamResponse> teamListForMatch(TeamSearchDTO teamSearchDTO) {
         return matchService.getTeamList(teamSearchDTO);
+    }
+
+    @PostMapping
+    public Long createMatch(MatchDTO matchDTO, @AuthenticationPrincipal UserDTO userDTO) {
+        return matchService.createMatch(matchDTO, userDTO);
     }
 }
