@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MatchStatus {
-    WAITING,
+    PENDING,
 
     ACCEPTED,
 

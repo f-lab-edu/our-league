@@ -1,8 +1,10 @@
 package com.minsproject.league.service;
 
 import com.minsproject.league.dto.MatchDTO;
+import com.minsproject.league.dto.MatchSearchDTO;
 import com.minsproject.league.dto.TeamSearchDTO;
 import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.response.MatchResponse;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.entity.Team;
 import com.minsproject.league.entity.TeamMember;
@@ -53,4 +55,25 @@ public class MatchService {
         return matchRepository.save(MatchDTO.toEntity(inviter, invitee, matchDTO)).getMatchId();
     }
 
+    public List<MatchResponse> getReceivedMatchList(Long teamId, MatchSearchDTO dto) {
+        if (isAllSearch(dto)) {
+            return getAllMatches(teamId, dto.getPageSize(), dto.getOffsetId());
+        }
+
+        return getFilteredMatches(teamId, dto);
+    }
+
+    private List<MatchResponse> getAllMatches(Long teamId, Integer pageSize, Long offsetId) {
+        return matchRepository.findAllMatchesByInviteeId(teamId, pageSize, offsetId).stream().map(MatchResponse::fromEntity).toList();
+    }
+
+    private List<MatchResponse> getFilteredMatches(Long teamId, MatchSearchDTO dto) {
+        return matchRepository.findFilteredMatchesByInviteeId(teamId, dto).stream().map(MatchResponse::fromEntity).toList();
+    }
+
+    private boolean isAllSearch(MatchSearchDTO dto) {
+        return dto.getStatus() == null
+                && dto.getStartDate() == null
+                && dto.getEndDate() == null;
+    }
 }
