@@ -79,10 +79,10 @@ class MatchServiceTest extends Specification {
         def invitee = new Team(teamId: 2L)
         def place = new Place(placeId: 1L)
         def expected = [
-                new Match(matchId: 1L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.WAITING),
-                new Match(matchId: 2L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.WAITING),
-                new Match(matchId: 3L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.WAITING),
-                new Match(matchId: 4L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.WAITING),
+                new Match(matchId: 1L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 2L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 3L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 4L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
         ]
 
         when:
