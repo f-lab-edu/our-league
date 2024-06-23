@@ -9,6 +9,8 @@ import com.minsproject.league.entity.Match
 import com.minsproject.league.entity.Place
 import com.minsproject.league.entity.Sports
 import com.minsproject.league.entity.Team
+import com.minsproject.league.exception.ErrorCode
+import com.minsproject.league.exception.LeagueCustomException
 import com.minsproject.league.repository.MatchRepository
 import com.minsproject.league.repository.TeamMemberRepository
 import com.minsproject.league.repository.TeamRepository
@@ -92,5 +94,34 @@ class MatchServiceTest extends Specification {
         def result = matchService.getReceivedMatchList(teamId, matchSearchDTO)
         result.size() == 4
         result.every {it instanceof MatchResponse }
+    }
+
+    def "상세 내용을 보려는 매치가 있으면 MatchResponse가 반환된다"() {
+        given:
+        def matchId = 1L
+        def inviter = new Team(teamId: 1L)
+        def invitee = new Team(teamId: 2L)
+        def place = new Place(placeId: 1L)
+        def match = new Match(matchId: 1L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING)
+
+        when:
+        def result = matchService.getMatchDetail(matchId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        result instanceof MatchResponse
+    }
+
+    def "매칭을 찾을 수 없으면 LeagueCustomException이 발생한다"() {
+        given:
+        def matchId = 321L
+
+        when:
+        matchService.getMatchDetail(matchId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.empty()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_NOT_FOUND
     }
 }
