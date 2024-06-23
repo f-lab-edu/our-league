@@ -46,4 +46,11 @@ public class MatchController {
             @ModelAttribute MatchSearchDTO matchSearchDTO) {
         return matchService.getReceivedMatchList(teamId, matchSearchDTO);
     }
+
+    @GetMapping("/{matchId}/detail")
+    @Operation(summary = "매칭 상세보기")
+    @ApiResponse(responseCode = "200")
+    public MatchResponse matchDetail(@PathVariable Long matchId) {
+        return matchService.getMatchDetail(matchId);
+    }
 }

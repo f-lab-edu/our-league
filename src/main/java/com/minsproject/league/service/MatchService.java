@@ -63,6 +63,10 @@ public class MatchService {
         return getFilteredMatches(teamId, dto);
     }
 
+    public MatchResponse getMatchDetail(Long matchId) {
+        return matchRepository.findById(matchId).map(MatchResponse::fromEntity).orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+    }
+
     private List<MatchResponse> getAllMatches(Long teamId, Integer pageSize, Long offsetId) {
         return matchRepository.findAllMatchesByInviteeId(teamId, pageSize, offsetId).stream().map(MatchResponse::fromEntity).toList();
     }
