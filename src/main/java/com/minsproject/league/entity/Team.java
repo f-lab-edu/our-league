@@ -6,12 +6,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@SQLRestriction("deleted = false")
 public class Team extends BaseEntity {
 
     @Id
@@ -51,6 +53,9 @@ public class Team extends BaseEntity {
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<TeamMember> teamMembers;
 
+    @Column(name = "deleted")
+    private boolean isDeleted;
+
     @Builder
     private Team(Long teamId, Sports sports, String teamName, String description, String fullAddress, String city, String town, String dong, String detailAddress, TeamStatus status, String creator) {
         this.teamId = teamId;
@@ -76,4 +81,7 @@ public class Team extends BaseEntity {
         this.modifier = username;
     }
 
+    public void delete() {
+        this.isDeleted = true;
+    }
 }
