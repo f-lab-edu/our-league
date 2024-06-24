@@ -25,4 +25,19 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 .limit(searchDTO.getPageSize())
                 .fetch();
     }
+
+    @Override
+    public List<Team> findTeamsForMatch(TeamSearchDTO searchDTO) {
+        return jpaQueryFactory
+                .selectFrom(QTeam.team)
+                .where(
+                        QTeam.team.city.eq(searchDTO.getCity())
+                        .and(QTeam.team.town.eq(searchDTO.getTown()))
+                        .and(QTeam.team.dong.eq(searchDTO.getDong()))
+                        .and(QTeam.team.sports.sportsId.eq(searchDTO.getSportsId()))
+                )
+                .fetch()
+                ;
+    }
+
 }

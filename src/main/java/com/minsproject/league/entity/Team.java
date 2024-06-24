@@ -21,6 +21,7 @@ public class Team extends BaseEntity {
     private Long teamId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sports_id")
     private Sports sports;
 
     @Column(unique = true)
