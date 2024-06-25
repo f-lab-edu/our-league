@@ -7,12 +7,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@SQLRestriction("deleted = false")
 public class TeamMember extends BaseEntity {
 
     @Id
@@ -37,6 +39,9 @@ public class TeamMember extends BaseEntity {
 
     private Timestamp statusChangedAt;
 
+    @Column(name = "deleted")
+    private boolean isDeleted;
+
     @Builder
     private TeamMember(Team team, User user, TeamMemberRole role, TeamMemberStatus status) {
         this.team = team;
@@ -49,5 +54,9 @@ public class TeamMember extends BaseEntity {
         this.role = TeamMemberRole.valueOf(dto.getRole().toUpperCase());
         this.status = TeamMemberStatus.valueOf(dto.getStatus().toUpperCase());
         this.statusChangedAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

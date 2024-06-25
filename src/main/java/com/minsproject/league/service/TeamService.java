@@ -59,7 +59,7 @@ public class TeamService {
             throw new LeagueCustomException(ErrorCode.DELETING_NOT_ALLOWED);
         }
 
-        team.softDelete();
+        team.delete();
 
         teamRepository.save(team);
     }
