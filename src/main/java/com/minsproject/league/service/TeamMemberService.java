@@ -71,9 +71,9 @@ public class TeamMemberService {
         boolean isOwner = Objects.equals(teamMember.getRole(), TeamMemberRole.OWNER);
         boolean isMyself = Objects.equals(teamMember.getUser().getUserId(), userDTO.getUserId());
         if (isOwner || isMyself) {
-            teamMember.softDelete();
-
+            teamMember.delete();
             teamMemberRepository.save(teamMember);
+            return;
         }
 
         throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
