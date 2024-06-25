@@ -10,23 +10,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
 
+@Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity {
+public class BaseEntity {
 
-    @Getter
     @Column(updatable = false)
     @CreatedDate
     private Timestamp createdAt;
 
-    @Getter
     @LastModifiedDate
     private Timestamp modifiedAt;
 
-    @Getter
-    private Timestamp removedAt;
-
-    public void softDelete() {
-        this.removedAt = new Timestamp(System.currentTimeMillis());
-    }
 }
