@@ -1,11 +1,13 @@
 package com.minsproject.league.service;
 
+import com.minsproject.league.constant.status.MatchStatus;
 import com.minsproject.league.dto.MatchDTO;
 import com.minsproject.league.dto.MatchSearchDTO;
 import com.minsproject.league.dto.TeamSearchDTO;
 import com.minsproject.league.dto.UserDTO;
 import com.minsproject.league.dto.response.MatchResponse;
 import com.minsproject.league.dto.response.TeamResponse;
+import com.minsproject.league.entity.Match;
 import com.minsproject.league.entity.Team;
 import com.minsproject.league.entity.TeamMember;
 import com.minsproject.league.exception.ErrorCode;
@@ -16,12 +18,15 @@ import com.minsproject.league.repository.TeamRepository;
 import com.minsproject.league.validator.MatchValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class MatchService {
+
+    private final TeamService teamService;
 
     private final TeamRepository teamRepository;
 
@@ -65,6 +70,29 @@ public class MatchService {
 
     public MatchResponse getMatchDetail(Long matchId) {
         return matchRepository.findById(matchId).map(MatchResponse::fromEntity).orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+    }
+
+    @Transactional
+    public Long acceptMatch(Long matchId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+
+        matchValidator.validateAcceptableMatch(match.getStatus());
+
+        matchValidator.validateMatchDay(match.getMatchDay());
+
+        Team inviter = teamService.getTeam(match.getInviter().getTeamId());
+        Team invitee = teamService.getTeam(match.getInvitee().getTeamId());
+
+        // 신청한 팀이 매칭이 가능한 상태인지 확인
+        matchValidator.validateTeamStatus(inviter.getStatus());
+
+        // 수락하려는 팀이 매칭이 가능한 상태인지 확인
+        matchValidator.validateTeamStatus(invitee.getStatus());
+
+        match.setStatus(MatchStatus.ACCEPTED);
+
+        return matchRepository.save(match).getMatchId();
     }
 
     private List<MatchResponse> getAllMatches(Long teamId, Integer pageSize, Long offsetId) {

@@ -41,11 +41,12 @@ public enum ErrorCode {
 
     INVALID_MATCH_DAY(HttpStatus.BAD_REQUEST, "매칭 날짜는 오늘 이후여야 합니다."),
 
+    INVALID_MATCH_PLACE(HttpStatus.BAD_REQUEST, "매칭 장소가 없습니다."),
 
-    INVALID_MATCH_PLACE(HttpStatus.BAD_REQUEST, "매칭 장소가 없습니다.")
+    MATCH_STATUS_NOT_PENDING(HttpStatus.BAD_REQUEST, "수락 가능한 매칭이 아닙니다.")
 
     ;
 
-    private HttpStatus status;
-    private String message;
+    private final HttpStatus status;
+    private final String message;
 }

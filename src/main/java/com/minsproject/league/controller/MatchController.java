@@ -53,4 +53,11 @@ public class MatchController {
     public MatchResponse matchDetail(@PathVariable Long matchId) {
         return matchService.getMatchDetail(matchId);
     }
+
+    @GetMapping("/{matchId}/accept")
+    @Operation(summary = "매칭 수락하기")
+    @ApiResponse(responseCode = "200")
+    public Long acceptMatch(@PathVariable Long matchId) {
+        return matchService.acceptMatch(matchId);
+    }
 }

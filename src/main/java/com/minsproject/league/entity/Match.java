@@ -4,17 +4,19 @@ import com.minsproject.league.constant.status.MatchStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@Entity
+@Entity(name = "matches")
 public class Match extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long matchId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inviter_team_id")
     private Team inviter;
@@ -29,7 +31,9 @@ public class Match extends BaseEntity {
 
     private LocalDateTime matchDay;
 
+    @Setter
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
     public Match(Team inviter, Team invitee, Place place, LocalDateTime matchDay, MatchStatus status) {

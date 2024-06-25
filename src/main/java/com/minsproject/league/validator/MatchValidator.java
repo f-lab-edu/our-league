@@ -1,6 +1,7 @@
 package com.minsproject.league.validator;
 
 import com.minsproject.league.constant.TeamMemberRole;
+import com.minsproject.league.constant.status.MatchStatus;
 import com.minsproject.league.constant.status.TeamStatus;
 import com.minsproject.league.dto.PlaceDTO;
 import com.minsproject.league.entity.TeamMember;
@@ -47,6 +48,12 @@ public class MatchValidator {
     public void validateTeamStatus(TeamStatus status) {
         if (status == TeamStatus.PAUSED) {
             throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES);
+        }
+    }
+
+    public void validateAcceptableMatch(MatchStatus status) {
+        if (status != MatchStatus.PENDING) {
+            throw new LeagueCustomException(ErrorCode.MATCH_STATUS_NOT_PENDING);
         }
     }
 }
