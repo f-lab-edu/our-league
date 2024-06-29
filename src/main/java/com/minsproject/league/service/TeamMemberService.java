@@ -49,34 +49,27 @@ public class TeamMemberService {
         return saved.getTeamMemberId();
     }
 
-    public TeamMemberResponse modify(TeamMemberDTO teamMemberDTO, UserDTO user) {
+    public TeamMemberResponse modify(TeamMemberDTO teamMemberDTO, UserDTO userDTO) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberDTO.getTeamMemberId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        boolean isOwner = Objects.equals(teamMember.getRole(), TeamMemberRole.OWNER);
-        boolean isMyself = Objects.equals(teamMember.getUser().getUserId(), user.getUserId());
-        if (isOwner || isMyself) {
+        if (teamMember.isOwnerOrMyself(userDTO.getUserId())) {
             teamMember.modify(teamMemberDTO);
-
             return TeamMemberResponse.fromEntity(teamMemberRepository.save(teamMember));
         }
 
         throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
-
     }
 
     @Transactional
     public void delete(Long teamMemberId, UserDTO userDTO) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        boolean isOwner = Objects.equals(teamMember.getRole(), TeamMemberRole.OWNER);
-        boolean isMyself = Objects.equals(teamMember.getUser().getUserId(), userDTO.getUserId());
-        if (isOwner || isMyself) {
+        if (teamMember.isOwnerOrMyself(userDTO.getUserId())) {
             teamMember.delete();
             teamMemberRepository.save(teamMember);
             return;
         }
 
         throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
-
     }
 }
