@@ -61,7 +61,7 @@ public class TeamMember extends BaseEntity {
         this.isDeleted = true;
     }
 
-    public boolean hasModifyAuth(Long userId) {
+    public boolean isOwnerOrMyself(Long userId) {
         boolean isOwner = Objects.equals(this.getRole(), TeamMemberRole.OWNER);
         boolean isMyself = Objects.equals(this.user.getUserId(), userId);
         return isOwner || isMyself;
