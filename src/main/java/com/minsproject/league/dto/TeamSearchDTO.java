@@ -8,9 +8,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TeamSearchDTO {
 
-    private Integer pageSize;
+    private Integer pageSize = 10;
 
-    private Long offsetId;
+    private Long offsetId = 0L;
 
     @Setter
     private String city;
@@ -25,19 +25,17 @@ public class TeamSearchDTO {
     private Long sportsId;
 
     public TeamSearchDTO(Integer pageSize, Long offsetId) {
-        setPageSizeAndOffsetId(pageSize, offsetId);
+        this.pageSize = pageSize;
+        this.offsetId = offsetId;
     }
 
     public TeamSearchDTO(Integer pageSize, Long offsetId, String city, String town, String dong, Long sportsId) {
-        setPageSizeAndOffsetId(pageSize, offsetId);
+        this.pageSize = pageSize;
+        this.offsetId = offsetId;
         this.city = city;
         this.town = town;
         this.dong = dong;
         this.sportsId = sportsId;
     }
 
-    private void setPageSizeAndOffsetId(Integer pageSize, Long offsetId) {
-        this.pageSize = pageSize == null ? 10 : pageSize;
-        this.offsetId = offsetId == null ? 0 : offsetId;
-    }
 }

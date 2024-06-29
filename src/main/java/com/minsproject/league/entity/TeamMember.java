@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -58,5 +59,11 @@ public class TeamMember extends BaseEntity {
 
     public void delete() {
         this.isDeleted = true;
+    }
+
+    public boolean isOwnerOrMyself(Long userId) {
+        boolean isOwner = Objects.equals(this.getRole(), TeamMemberRole.OWNER);
+        boolean isMyself = Objects.equals(this.user.getUserId(), userId);
+        return isOwner || isMyself;
     }
 }
