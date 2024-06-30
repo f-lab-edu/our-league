@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -84,5 +85,9 @@ public class Team extends BaseEntity {
 
     public void delete() {
         this.isDeleted = true;
+    }
+
+    public boolean isUserInTeam(Long userId) {
+        return this.teamMembers.stream().anyMatch(member -> Objects.equals(member.getUser().getUserId(), userId));
     }
 }

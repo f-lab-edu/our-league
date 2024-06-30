@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -30,19 +28,17 @@ public class TeamMemberService {
 
     private final TeamMemberRepository teamMemberRepository;
 
-    public Long create(Long teamId, UserDTO user) {
+    public Long create(Long teamId, UserDTO userDTO) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
         if (team.getStatus() == TeamStatus.PAUSED) {
             throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MEMBER);
         }
 
-        List<TeamMember> teamMembers = team.getTeamMembers();
-        boolean isUserInTeam = teamMembers.stream().anyMatch(member -> Objects.equals(member.getUser().getUserId(), user.getUserId()));
-        if (isUserInTeam) {
+        if (team.isUserInTeam(userDTO.getUserId())) {
             throw new LeagueCustomException(ErrorCode.ALREADY_IN_TEAM);
         }
 
-        User userInfo = userService.getUserById(user.getUserId());
+        User userInfo = userService.getUserById(userDTO.getUserId());
 
         TeamMember saved = teamMemberRepository.save(TeamMemberDTO.toEntity(team, userInfo, TeamMemberRole.NORMAL, TeamMemberStatus.NORMAL));
 
@@ -52,7 +48,7 @@ public class TeamMemberService {
     public TeamMemberResponse modify(TeamMemberDTO teamMemberDTO, UserDTO userDTO) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberDTO.getTeamMemberId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        if (teamMember.isOwnerOrMyself(userDTO.getUserId())) {
+        if (teamMember.isOwner() || teamMember.isMyself(userDTO.getUserId())) {
             teamMember.modify(teamMemberDTO);
             return TeamMemberResponse.fromEntity(teamMemberRepository.save(teamMember));
         }
@@ -64,7 +60,7 @@ public class TeamMemberService {
     public void delete(Long teamMemberId, UserDTO userDTO) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        if (teamMember.isOwnerOrMyself(userDTO.getUserId())) {
+        if (teamMember.isOwner() || teamMember.isMyself(userDTO.getUserId())) {
             teamMember.delete();
             teamMemberRepository.save(teamMember);
             return;
