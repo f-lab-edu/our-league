@@ -1,6 +1,8 @@
 package com.minsproject.league.service
 
+import com.minsproject.league.constant.TeamMemberRole
 import com.minsproject.league.constant.status.MatchStatus
+import com.minsproject.league.constant.status.TeamMemberStatus
 import com.minsproject.league.constant.status.TeamStatus
 import com.minsproject.league.dto.MatchSearchDTO
 import com.minsproject.league.dto.TeamSearchDTO
@@ -10,6 +12,7 @@ import com.minsproject.league.entity.Match
 import com.minsproject.league.entity.Place
 import com.minsproject.league.entity.Sports
 import com.minsproject.league.entity.Team
+import com.minsproject.league.entity.TeamMember
 import com.minsproject.league.exception.ErrorCode
 import com.minsproject.league.exception.LeagueCustomException
 import com.minsproject.league.repository.MatchRepository
@@ -63,10 +66,10 @@ class MatchServiceTest extends Specification {
         def invitee = new Team(teamId: 2L)
         def place = new Place(placeId: 1L)
         def expected = [
-                new Match(matchId: 1L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
-                new Match(matchId: 2L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
-                new Match(matchId: 3L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
-                new Match(matchId: 4L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 1L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 2L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 3L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 4L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
         ]
 
         when:
@@ -86,10 +89,10 @@ class MatchServiceTest extends Specification {
         def invitee = new Team(teamId: 2L)
         def place = new Place(placeId: 1L)
         def expected = [
-                new Match(matchId: 1L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
-                new Match(matchId: 2L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
-                new Match(matchId: 3L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
-                new Match(matchId: 4L,  inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 1L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 2L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 3L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
+                new Match(matchId: 4L, inviter: inviter, invitee: invitee, place: place, status: MatchStatus.PENDING),
         ]
 
         when:
@@ -98,7 +101,7 @@ class MatchServiceTest extends Specification {
         then:
         def result = matchService.getReceivedMatchList(teamId, matchSearchDTO)
         result.size() == 4
-        result.every {it instanceof MatchResponse }
+        result.every { it instanceof MatchResponse }
     }
 
     def "상세 내용을 보려는 매치가 있으면 MatchResponse가 반환된다"() {
@@ -172,7 +175,7 @@ class MatchServiceTest extends Specification {
         then:
         1 * matchRepository.findById(matchId) >> Optional.of(match)
         1 * matchValidator.validateAcceptableMatch(match.getStatus())
-        1 * matchValidator.validateMatchDay(match.getMatchDay()) >> { throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY)}
+        1 * matchValidator.validateMatchDay(match.getMatchDay()) >> { throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY) }
         def exception = thrown(LeagueCustomException)
         exception.errorCode == ErrorCode.INVALID_MATCH_DAY
     }
@@ -195,7 +198,7 @@ class MatchServiceTest extends Specification {
         1 * matchValidator.validateMatchDay(match.getMatchDay())
         1 * teamService.getTeam(match.getInviter().getTeamId()) >> inviter
         1 * teamService.getTeam(match.getInvitee().getTeamId()) >> invitee
-        1 * matchValidator.validateTeamStatus(inviter.getStatus()) >> { throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES)}
+        1 * matchValidator.validateTeamStatus(inviter.getStatus()) >> { throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES) }
         def exception = thrown(LeagueCustomException)
         exception.errorCode == ErrorCode.TEAM_NOT_ACCEPTING_MATCHES
     }
@@ -219,7 +222,7 @@ class MatchServiceTest extends Specification {
         1 * teamService.getTeam(match.getInviter().getTeamId()) >> inviter
         1 * teamService.getTeam(match.getInvitee().getTeamId()) >> invitee
         1 * matchValidator.validateTeamStatus(inviter.getStatus())
-        1 * matchValidator.validateTeamStatus(invitee.getStatus()) >> { throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES)}
+        1 * matchValidator.validateTeamStatus(invitee.getStatus()) >> { throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES) }
         def exception = thrown(LeagueCustomException)
         exception.errorCode == ErrorCode.TEAM_NOT_ACCEPTING_MATCHES
     }
@@ -246,6 +249,74 @@ class MatchServiceTest extends Specification {
         1 * matchValidator.validateTeamStatus(invitee.getStatus())
 
         match.getStatus() == MatchStatus.ACCEPTED
+        1 * matchRepository.save(match) >> match
+    }
+
+    def "매칭이 존재하지 않으면 매칭 거절 실패"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+
+        when:
+        matchService.rejectMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.empty()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_NOT_FOUND
+    }
+
+    def "매칭을 거절하려는 사람이 팀 회원이 아니면 예외 발생"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def invitee = new Team(teamId: 1L)
+        def match = new Match(matchId: matchId, invitee: invitee)
+
+        when:
+        matchService.rejectMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        1 * teamMemberRepository.findByTeamIdAndUserId(invitee.getTeamId(), userId) >> Optional.empty()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.TEAM_MEMBER_NOT_FOUND
+    }
+
+    def "매칭을 거절하려는 사람이 OWNER가 아니면 예외 발생"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def invitee = new Team(teamId: 1L)
+        def match = new Match(matchId: matchId, invitee: invitee)
+        def teamMember = new TeamMember(role: TeamMemberRole.NORMAL)
+
+        when:
+        matchService.rejectMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        1 * teamMemberRepository.findByTeamIdAndUserId(invitee.getTeamId(), userId) >> Optional.of(teamMember)
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_REJECT_NOT_ALLOWED
+    }
+
+    def "매칭 거절 성공"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def invitee = new Team(teamId: 1L)
+        def match = new Match(matchId: matchId, invitee: invitee)
+        def teamMember = new TeamMember(role: TeamMemberRole.OWNER)
+
+        when:
+        matchService.rejectMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        1 * teamMemberRepository.findByTeamIdAndUserId(invitee.getTeamId(), userId) >> Optional.of(teamMember)
+
+        match.getStatus() == MatchStatus.REJECTED
         1 * matchRepository.save(match) >> match
     }
 }
