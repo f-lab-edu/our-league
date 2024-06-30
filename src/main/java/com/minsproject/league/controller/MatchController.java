@@ -60,4 +60,12 @@ public class MatchController {
     public Long acceptMatch(@PathVariable Long matchId) {
         return matchService.acceptMatch(matchId);
     }
+
+    @GetMapping("/{matchId}/accept")
+    @Operation(summary = "매칭 거절하기")
+    @ApiResponse(responseCode = "200")
+    public Long rejectMatch(@PathVariable Long matchId, @AuthenticationPrincipal UserDTO userDTO) {
+        return matchService.rejectMatch(matchId, userDTO.getUserId());
+    }
+
 }

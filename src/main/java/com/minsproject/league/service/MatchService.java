@@ -95,6 +95,23 @@ public class MatchService {
         return matchRepository.save(match).getMatchId();
     }
 
+    public Long rejectMatch(Long matchId, Long userId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+
+        Team invitee = match.getInvitee();
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(invitee.getTeamId(), userId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+
+        if (!teamMember.isOwner()) {
+            throw new LeagueCustomException(ErrorCode.MATCH_REJECT_NOT_ALLOWED);
+        }
+
+        match.setStatus(MatchStatus.REJECTED);
+
+        return matchRepository.save(match).getMatchId();
+    }
+
     private List<MatchResponse> getAllMatches(Long teamId, Integer pageSize, Long offsetId) {
         return matchRepository.findAllMatchesByInviteeId(teamId, pageSize, offsetId).stream().map(MatchResponse::fromEntity).toList();
     }

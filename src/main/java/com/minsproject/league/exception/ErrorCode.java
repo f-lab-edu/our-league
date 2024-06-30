@@ -35,6 +35,8 @@ public enum ErrorCode {
 
     MATCH_INVITE_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "매칭 신청 권한이 없습니다."),
 
+    MATCH_REJECT_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "매칭 거절 권한이 없습니다."),
+
     TEAM_NOT_ACCEPTING_MATCHES(HttpStatus.BAD_REQUEST, "해당 팀은 현재 매칭을 받고 있지 않습니다."),
 
     ADDRESS_NOT_SUITABLE_FOR_MATCH(HttpStatus.BAD_REQUEST, "매칭을 진행할 수 없는 주소입니다."),
