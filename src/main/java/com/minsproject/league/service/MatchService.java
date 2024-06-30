@@ -97,6 +97,10 @@ public class MatchService {
     public Long rejectMatch(Long matchId, Long userId) {
         Match match = getMatch(matchId);
 
+        if (match.getStatus() != MatchStatus.PENDING) {
+            throw new LeagueCustomException(ErrorCode.MATCH_CANNOT_BE_CANCELED);
+        }
+
         Team invitee = match.getInvitee();
         TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(invitee.getTeamId(), userId)
                 .orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
