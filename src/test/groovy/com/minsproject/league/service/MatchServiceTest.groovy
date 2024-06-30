@@ -319,4 +319,88 @@ class MatchServiceTest extends Specification {
         match.getStatus() == MatchStatus.REJECTED
         1 * matchRepository.save(match) >> match
     }
+
+    def "매칭이 존재하지 않으면 매칭 취소 실패"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+
+        when:
+        matchService.cancelMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.empty()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_NOT_FOUND
+    }
+
+    def "매칭 상태가 PENDING이 아니면 매칭 취소 예외 발생"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def match = new Match(matchId: matchId, status: MatchStatus.FINISHED)
+
+        when:
+        matchService.cancelMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        MatchStatus.PENDING != match.getStatus()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_CANNOT_BE_CANCELED
+    }
+
+    def "매칭을 취소하려는 사람이 팀 회원이 아니면 예외 발생"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def inviter = new Team(teamId: 1L)
+        def match = new Match(matchId: matchId, inviter: inviter)
+
+        when:
+        matchService.cancelMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        1 * teamMemberRepository.findByTeamIdAndUserId(inviter.getTeamId(), userId) >> Optional.empty()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.TEAM_MEMBER_NOT_FOUND
+    }
+
+    def "매칭을 취소하려는 사람이 OWNER가 아니면 예외 발생"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def inviter = new Team(teamId: 1L)
+        def match = new Match(matchId: matchId, inviter: inviter)
+        def teamMember = new TeamMember(role: TeamMemberRole.NORMAL)
+
+        when:
+        matchService.cancelMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        1 * teamMemberRepository.findByTeamIdAndUserId(inviter.getTeamId(), userId) >> Optional.of(teamMember)
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_REJECT_NOT_ALLOWED
+    }
+
+    def "매칭 취소 성공"() {
+        given:
+        def matchId = 999L
+        def userId = 1L
+        def inviter = new Team(teamId: 1L)
+        def match = new Match(matchId: matchId, inviter: inviter, status: MatchStatus.PENDING)
+        def teamMember = new TeamMember(role: TeamMemberRole.OWNER)
+
+        when:
+        matchService.cancelMatch(matchId, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        1 * teamMemberRepository.findByTeamIdAndUserId(inviter.getTeamId(), userId) >> Optional.of(teamMember)
+
+        match.getStatus() == MatchStatus.CANCELED
+        1 * matchRepository.save(match) >> match
+    }
 }
