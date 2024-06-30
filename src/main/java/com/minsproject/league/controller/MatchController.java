@@ -68,4 +68,10 @@ public class MatchController {
         return matchService.rejectMatch(matchId, userDTO.getUserId());
     }
 
+    @GetMapping("/{matchId}/cancel")
+    @Operation(summary = "매칭 취소하기")
+    @ApiResponse(responseCode = "200")
+    public Long cancelMatch(@PathVariable Long matchId, @AuthenticationPrincipal UserDTO userDTO) {
+        return matchService.cancelMatch(matchId, userDTO.getUserId());
+    }
 }

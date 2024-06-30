@@ -74,8 +74,7 @@ public class MatchService {
 
     @Transactional
     public Long acceptMatch(Long matchId) {
-        Match match = matchRepository.findById(matchId)
-                .orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+        Match match = getMatch(matchId);
 
         matchValidator.validateAcceptableMatch(match.getStatus());
 
@@ -96,8 +95,7 @@ public class MatchService {
     }
 
     public Long rejectMatch(Long matchId, Long userId) {
-        Match match = matchRepository.findById(matchId)
-                .orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+        Match match = getMatch(matchId);
 
         Team invitee = match.getInvitee();
         TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(invitee.getTeamId(), userId)
@@ -112,6 +110,31 @@ public class MatchService {
         return matchRepository.save(match).getMatchId();
     }
 
+    public Long cancelMatch(Long matchId, Long userId) {
+        Match match = getMatch(matchId);
+
+        if (match.getStatus() != MatchStatus.PENDING) {
+            throw new LeagueCustomException(ErrorCode.MATCH_CANNOT_BE_CANCELED);
+        }
+
+        Team inviter = match.getInviter();
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(inviter.getTeamId(), userId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+
+        if (!teamMember.isOwner()) {
+            throw new LeagueCustomException(ErrorCode.MATCH_REJECT_NOT_ALLOWED);
+        }
+
+        match.setStatus(MatchStatus.CANCELED);
+
+        return matchRepository.save(match).getMatchId();
+    }
+
+    public Match getMatch(Long matchId) {
+        return matchRepository.findById(matchId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.MATCH_NOT_FOUND));
+    }
+    
     private List<MatchResponse> getAllMatches(Long teamId, Integer pageSize, Long offsetId) {
         return matchRepository.findAllMatchesByInviteeId(teamId, pageSize, offsetId).stream().map(MatchResponse::fromEntity).toList();
     }
