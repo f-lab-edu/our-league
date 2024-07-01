@@ -137,41 +137,34 @@ public class MatchService {
     }
 
     public Long addResult(Long matchId, Long teamId, String result, Long userId) {
-        // 존재하는 매치인지
         Match match = getMatch(matchId);
 
-        // 매칭에 참여한 팀이 맞는지
-        boolean isInviter = match.isInviter(teamId);
-        boolean isInvitee = match.isInvitee(teamId);
-        if (!(isInviter || isInvitee)) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
+
+        if (match.isParticipant(team)) {
             throw new LeagueCustomException(ErrorCode.MATCH_INVALID_TEAM);
         }
 
-        // 유저가 해당 팀의 owner가 맞는지
-        Long userTeamId = isInviter ? match.getInviter().getTeamId() : match.getInvitee().getTeamId();
-        TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(userTeamId, userId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+
         if (!teamMember.isOwner()) {
             throw new LeagueCustomException(ErrorCode.MATCH_RESULT_NOT_ALLOWED);
         }
 
-        // 매치의 상태가 ACCEPTED인지
-        if (match.getStatus() != MatchStatus.ACCEPTED) {
+        if (!match.isStatusValidForResult()) {
             throw new LeagueCustomException(ErrorCode.MATCH_STATUS_NOT_ACCEPTED);
         }
 
-        // 매칭 날짜가 지났는지
-        if (match.getMatchDay().isBefore(LocalDateTime.now())) {
+        if (match.isPastMatchDay()) {
             throw new LeagueCustomException(ErrorCode.MATCH_DAY_MUST_BE_PASSED);
         }
 
-        // 해당팀이 이미 등록한 결과가 있는지
-        boolean hasResult = resultRepository.findByMatchIdAndTeamId(matchId, userTeamId).isPresent();
-        if (hasResult) {
+        if (resultRepository.findByMatchIdAndTeamId(matchId, teamId).isPresent()) {
             throw new LeagueCustomException(ErrorCode.MATCH_RESULT_BY_TEAM_EXISTS);
         }
 
-        //Result 엔티티 생성 및 저장, 저장된 엔티티 id 값 리턴
-        Team team = isInviter ? match.getInviter() : match.getInvitee();
         return resultRepository.save(Result.of(match, team, result)).getResultId();
     }
 
