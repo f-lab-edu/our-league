@@ -1,9 +1,6 @@
 package com.minsproject.league.controller;
 
-import com.minsproject.league.dto.MatchDTO;
-import com.minsproject.league.dto.MatchSearchDTO;
-import com.minsproject.league.dto.TeamSearchDTO;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.*;
 import com.minsproject.league.dto.response.MatchResponse;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.service.MatchService;
@@ -73,5 +70,12 @@ public class MatchController {
     @ApiResponse(responseCode = "200")
     public Long cancelMatch(@PathVariable Long matchId, @AuthenticationPrincipal UserDTO userDTO) {
         return matchService.cancelMatch(matchId, userDTO.getUserId());
+    }
+
+    @PostMapping("/{matchId}/result")
+    @Operation(summary = "매칭 결과 입력하기")
+    @ApiResponse(responseCode = "200")
+    public Long result(@PathVariable Long matchId, @RequestBody Long teamId, @RequestBody String result, @AuthenticationPrincipal UserDTO userDTO) {
+        return matchService.addResult(matchId, teamId, result, userDTO.getUserId());
     }
 }

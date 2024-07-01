@@ -26,6 +26,12 @@ public enum ErrorCode {
 
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "회원이나 비밀번호를 확인해주세요."),
 
+    MATCH_INVITE_NOT_ALLOWED(HttpStatus.UNAUTHORIZED, "매칭 신청 권한이 없습니다."),
+
+    MATCH_REJECT_NOT_ALLOWED(HttpStatus.UNAUTHORIZED, "매칭 거절 권한이 없습니다."),
+
+    MATCH_RESULT_NOT_ALLOWED(HttpStatus.UNAUTHORIZED, "매칭 결과 입력 권한이 없습니다."),
+
     // BAD_REQUEST
     DUPLICATED_USER_EMAIL(HttpStatus.BAD_REQUEST, "이미 가입한 이메일입니다."),
 
@@ -37,17 +43,23 @@ public enum ErrorCode {
 
     ADDRESS_NOT_SUITABLE_FOR_MATCH(HttpStatus.BAD_REQUEST, "매칭을 진행할 수 없는 주소입니다."),
 
-    INVALID_MATCH_DAY(HttpStatus.BAD_REQUEST, "매칭 날짜는 오늘 이후여야 합니다."),
+    MATCH_DAY_MUST_BE_BEFORE(HttpStatus.BAD_REQUEST, "매칭 날짜는 오늘 이후여야 합니다."),
+
+    MATCH_DAY_MUST_BE_PASSED(HttpStatus.BAD_REQUEST, "매칭 날짜가 지나지 않았습니다."),
 
     INVALID_MATCH_PLACE(HttpStatus.BAD_REQUEST, "매칭 장소가 없습니다."),
 
-    MATCH_INVITE_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "매칭 신청 권한이 없습니다."),
-
-    MATCH_REJECT_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "매칭 거절 권한이 없습니다."),
-
     MATCH_STATUS_NOT_PENDING(HttpStatus.BAD_REQUEST, "수락 가능한 매칭이 아닙니다."),
 
-    MATCH_CANNOT_BE_CANCELED(HttpStatus.BAD_REQUEST, "매칭을 취소할 수 없습니다.");
+    MATCH_STATUS_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "결과를 입력할 수 있는 매칭이 아닙니다."),
+
+    MATCH_INVALID_TEAM(HttpStatus.BAD_REQUEST, "매칭에 참여한 팀이 아닙니다."),
+
+    MATCH_CANNOT_BE_CANCELED(HttpStatus.BAD_REQUEST, "매칭을 취소할 수 없습니다."),
+
+    MATCH_RESULT_BY_TEAM_EXISTS(HttpStatus.BAD_REQUEST, "이미 결과를 입력했습니다."),
+
+    INVALID_RESULT_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 매칭 결과입니다.");
 
     private final HttpStatus status;
     private final String message;

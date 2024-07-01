@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -42,5 +43,13 @@ public class Match extends BaseEntity {
         this.place = place;
         this.matchDay = matchDay;
         this.status = status;
+    }
+
+    public boolean isInviter(Long teamId) {
+        return Objects.equals(this.inviter.getTeamId(), teamId);
+    }
+
+    public boolean isInvitee(Long teamId) {
+        return Objects.equals(this.invitee.getTeamId(), teamId);
     }
 }

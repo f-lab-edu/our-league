@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 public class MatchValidator {
     public void validateMatchDay(LocalDateTime matchDay) {
         if (matchDay.isBefore(LocalDateTime.now())) {
-            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY);
+            throw new LeagueCustomException(ErrorCode.MATCH_DAY_MUST_BE_BEFORE);
         }
     }
 
