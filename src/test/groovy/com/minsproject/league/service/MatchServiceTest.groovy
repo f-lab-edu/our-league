@@ -2,7 +2,6 @@ package com.minsproject.league.service
 
 import com.minsproject.league.constant.TeamMemberRole
 import com.minsproject.league.constant.status.MatchStatus
-import com.minsproject.league.constant.status.TeamMemberStatus
 import com.minsproject.league.constant.status.TeamStatus
 import com.minsproject.league.dto.MatchSearchDTO
 import com.minsproject.league.dto.TeamSearchDTO
@@ -16,6 +15,7 @@ import com.minsproject.league.entity.TeamMember
 import com.minsproject.league.exception.ErrorCode
 import com.minsproject.league.exception.LeagueCustomException
 import com.minsproject.league.repository.MatchRepository
+import com.minsproject.league.repository.ResultRepository
 import com.minsproject.league.repository.TeamMemberRepository
 import com.minsproject.league.repository.TeamRepository
 import com.minsproject.league.validator.MatchValidator
@@ -35,10 +35,12 @@ class MatchServiceTest extends Specification {
 
     MatchRepository matchRepository = Mock()
 
+    ResultRepository resultRepository = Mock()
+
     MatchValidator matchValidator = Mock()
 
     @Subject
-    def matchService = new MatchService(teamService, teamRepository, teamMemberRepository, matchRepository, matchValidator)
+    def matchService = new MatchService(teamService, teamRepository, teamMemberRepository, matchRepository, resultRepository, matchValidator)
 
     def "매칭이 가능한 팀 조회해오기"() {
         given:
@@ -175,9 +177,9 @@ class MatchServiceTest extends Specification {
         then:
         1 * matchRepository.findById(matchId) >> Optional.of(match)
         1 * matchValidator.validateAcceptableMatch(match.getStatus())
-        1 * matchValidator.validateMatchDay(match.getMatchDay()) >> { throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY) }
+        1 * matchValidator.validateMatchDay(match.getMatchDay()) >> { throw new LeagueCustomException(ErrorCode.MATCH_DAY_MUST_BE_BEFORE) }
         def exception = thrown(LeagueCustomException)
-        exception.errorCode == ErrorCode.INVALID_MATCH_DAY
+        exception.errorCode == ErrorCode.MATCH_DAY_MUST_BE_BEFORE
     }
 
     def "신청자 팀이 매칭 가능 상태가 아니여서 매칭 수락 실패"() {
@@ -402,5 +404,41 @@ class MatchServiceTest extends Specification {
 
         match.getStatus() == MatchStatus.CANCELED
         1 * matchRepository.save(match) >> match
+    }
+
+    def "존재하지 않는 매치라서 결과 입력 예외 발생"() {
+        given:
+        def matchId = 999L
+        def teamId = 1L
+        def result = "W"
+        def userId = 1L
+
+        when:
+        matchService.addResult(matchId, teamId, result, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.ofNullable()
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_NOT_FOUND
+    }
+
+    def "매칭에 참여한 팀이 아니면 예외 발생"() {
+        given:
+        def matchId = 999L
+        def teamId = 1L
+        def result = "W"
+        def userId = 1L
+        def match = new Match(
+                inviter: new Team(teamId: 3L),
+                invitee: new Team(teamId: 4L)
+        )
+
+        when:
+        matchService.addResult(matchId, teamId, result, userId)
+
+        then:
+        1 * matchRepository.findById(matchId) >> Optional.of(match)
+        def exception = thrown(LeagueCustomException)
+        exception.errorCode == ErrorCode.MATCH_INVALID_TEAM
     }
 }
