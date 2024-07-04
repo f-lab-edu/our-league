@@ -6,7 +6,7 @@ FROM amazoncorretto:17-alpine
 WORKDIR /app
 
 # JAR 파일 복사
-COPY build/libs/*.jar app.jar
+COPY build/libs/league-0.0.1-SNAPSHOT.jar app.jar
 
 # 포트 설정 (Spring Boot 기본 포트)
 EXPOSE 8080
