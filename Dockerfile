@@ -1,3 +1,4 @@
+# test
 # Amazon Corretto 17 이미지 사용
 FROM amazoncorretto:17-alpine
 
