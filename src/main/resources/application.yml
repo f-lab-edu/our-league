@@ -36,3 +36,8 @@ springdoc:
     operations-sorter: alpha
   paths-to-match:
     - /api/**
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  #30일
+  token.expired-time-ms: ${JWT_EXPIRATION_MS}
