@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -161,7 +160,7 @@ public class MatchService {
             throw new LeagueCustomException(ErrorCode.MATCH_DAY_MUST_BE_PASSED);
         }
 
-        if (resultRepository.findByMatchIdAndTeamId(matchId, teamId).isPresent()) {
+        if (resultRepository.findByMatch_matchIdAndTeam_teamId(matchId, teamId).isPresent()) {
             throw new LeagueCustomException(ErrorCode.MATCH_RESULT_BY_TEAM_EXISTS);
         }
 
