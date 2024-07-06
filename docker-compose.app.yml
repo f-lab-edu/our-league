@@ -1,17 +1,19 @@
 version: '3.8'
 services:
   app:
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8081:8080"
     environment:
-      SPRING_DATASOURCE_URL:  jdbc:mysql://db:3306/league?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${DATABASE}?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      JWT_EXPRIATIONS_MS: ${JWT_EXPIRATION_MS}
+      JWT_EXPIRATIONS_MS: ${JWT_EXPIRATION_MS}
     networks:
       - mynetwork
 
