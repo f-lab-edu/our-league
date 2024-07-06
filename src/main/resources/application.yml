@@ -1,6 +1,20 @@
 spring:
   application:
     name: league
+  profiles:
+    active: ${SPRING_ACTIVE_PROFILE:dev}
+  jackson:
+    time-zone: Asia/Seoul
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:~/league
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,12 +29,31 @@ spring:
       enabled: true
       path:
         /h2-console
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
   datasource:
-    url: jdbc:h2:~/league
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
+    url: jdbc:mysql://localhost:3306/${DATABASE}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  h2:
+    console:
+      enabled: true
+      path:
+        /h2-console
+---
 logging:
   level:
     org:
@@ -39,5 +72,4 @@ springdoc:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  #30일
   token.expired-time-ms: ${JWT_EXPIRATION_MS}
