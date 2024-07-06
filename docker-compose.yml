@@ -16,10 +16,11 @@ services:
     networks:
       - mynetwork
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${DB_USERNAME}", "--password=${DB_PASSWORD}" ]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 40s
 
 volumes:
   mysql-data:
