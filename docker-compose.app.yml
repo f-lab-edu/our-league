@@ -17,6 +17,10 @@ services:
       JWT_EXPIRATIONS_MS: ${JWT_EXPIRATION_MS}
     networks:
       - mynetwork
+  db:
+    extends:
+      file: docker-compose.yml
+      service: db
 
 networks:
   mynetwork:
