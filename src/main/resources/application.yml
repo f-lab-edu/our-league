@@ -67,4 +67,5 @@ springdoc:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  token.expired-time-ms: ${JWT_EXPIRATION_MS}
+  token:
+    expired-time-ms: ${JWT_EXPIRATION_MS}
