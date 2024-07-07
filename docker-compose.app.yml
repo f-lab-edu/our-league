@@ -2,8 +2,7 @@ version: '3.8'
 services:
   app:
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     build:
       context: .
       dockerfile: Dockerfile
