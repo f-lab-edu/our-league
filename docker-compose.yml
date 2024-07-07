@@ -23,7 +23,7 @@ services:
       start_period: 60s
 
 volumes:
-  - ./mysql-data:/var/lib/mysql
+  mysql-data:
 
 networks:
   mynetwork:
