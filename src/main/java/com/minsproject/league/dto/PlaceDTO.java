@@ -20,19 +20,17 @@ public class PlaceDTO {
 
     private Integer zipcode;
 
-    public static Place toEntity(PlaceDTO dto) {
-        if (dto.getPlaceId() == null) {
-            return new Place(
-                    dto.getCity(),
-                    dto.getTown(),
-                    dto.getDong(),
-                    dto.getDetailAddress(),
-                    dto.getZipcode()
-            );
-        }
-
+    public Place toEntity() {
         return new Place(
-                dto.getPlaceId()
+                this.city,
+                this.city,
+                this.dong,
+                this.detailAddress,
+                this.zipcode
         );
+    }
+
+    public boolean isNewPlace() {
+        return this.placeId == null;
     }
 }

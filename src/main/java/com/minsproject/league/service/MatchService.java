@@ -1,11 +1,10 @@
 package com.minsproject.league.service;
 
-import com.minsproject.league.dto.MatchDTO;
-import com.minsproject.league.dto.MatchSearchDTO;
-import com.minsproject.league.dto.TeamSearchDTO;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.*;
 import com.minsproject.league.dto.response.MatchResponse;
 import com.minsproject.league.dto.response.TeamResponse;
+import com.minsproject.league.entity.Place;
+import com.minsproject.league.entity.PlaceRepository;
 import com.minsproject.league.entity.Team;
 import com.minsproject.league.entity.TeamMember;
 import com.minsproject.league.exception.ErrorCode;
@@ -29,7 +28,10 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
 
+    private final PlaceRepository placeRepository;
+
     private final MatchValidator matchValidator;
+
 
     public List<TeamResponse> getTeamList(TeamSearchDTO searchDTO) {
         return teamRepository.findTeamsForMatch(searchDTO).stream().map(TeamResponse::fromEntity).toList();
@@ -37,22 +39,39 @@ public class MatchService {
 
     public Long createMatch(MatchDTO matchDTO, UserDTO userDTO) {
 
-        matchValidator.validateMatchDay(matchDTO.getMatchDay());
+        if (matchValidator.isMatchDayBeforeNow(matchDTO.getMatchDay())) {
+            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY);
+        }
 
-        matchValidator.validatePlace(matchDTO.getPlace());
+        if (matchValidator.isPlaceNotNull(matchDTO.getPlace())) {
+            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_PLACE);
+        }
+
+        boolean isNewPlace = matchDTO.getPlace().isNewPlace();
+        Place matchPlace;
+        if (isNewPlace) {
+            matchPlace = placeRepository.save(matchDTO.getPlace().toEntity());
+        } else {
+            matchPlace = placeRepository.findById(matchDTO.getPlace().getPlaceId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.INVALID_MATCH_PLACE));
+        }
 
         TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(matchDTO.getInviterTeamId(), userDTO.getUserId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        matchValidator.validateTeamMemberRole(teamMember);
+        if (teamMember.isNormalMember()) {
+            throw new LeagueCustomException(ErrorCode.MATCH_INVITE_NOT_ALLOWED);
+        }
 
-        Team inviter = teamMember.getTeam();
+        Team inviter = teamRepository.findById(teamMember.getTeam().getTeamId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
+        if (!inviter.isAcceptingMatch()) {
+            throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES);
+        }
+
         Team invitee = teamRepository.findById(matchDTO.getInviteeTeamId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
+        if (!invitee.isAcceptingMatch()) {
+            throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES);
+        }
 
-        matchValidator.validateTeamAddress(inviter.getFullAddress(), invitee.getFullAddress());
-
-        matchValidator.validateTeamStatus(invitee.getStatus());
-
-        return matchRepository.save(MatchDTO.toEntity(inviter, invitee, matchDTO)).getMatchId();
+        return matchRepository.save(matchDTO.toEntity(inviter, invitee, matchPlace)).getMatchId();
     }
 
     public List<MatchResponse> getReceivedMatchList(Long teamId, MatchSearchDTO dto) {

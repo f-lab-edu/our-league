@@ -2,6 +2,7 @@ package com.minsproject.league.dto;
 
 import com.minsproject.league.constant.status.MatchStatus;
 import com.minsproject.league.entity.Match;
+import com.minsproject.league.entity.Place;
 import com.minsproject.league.entity.Team;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -33,14 +34,13 @@ public class MatchDTO {
         this.status = status;
     }
 
-    public static Match toEntity(Team inviter, Team invitee, MatchDTO dto) {
+    public Match toEntity(Team inviter, Team invitee, Place place) {
         return new Match(
                 inviter,
                 invitee,
-                PlaceDTO.toEntity(dto.getPlace()),
-                dto.getMatchDay(),
-                dto.getStatus()
+                place,
+                this.matchDay,
+                this.status
         );
     }
-
 }

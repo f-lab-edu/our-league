@@ -66,4 +66,8 @@ public class TeamMember extends BaseEntity {
         boolean isMyself = Objects.equals(this.user.getUserId(), userId);
         return isOwner || isMyself;
     }
+
+    public boolean isNormalMember() {
+        return this.role == TeamMemberRole.NORMAL;
+    }
 }
