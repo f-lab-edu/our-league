@@ -10,7 +10,6 @@ import com.minsproject.league.entity.TeamMember;
 import com.minsproject.league.exception.ErrorCode;
 import com.minsproject.league.exception.LeagueCustomException;
 import com.minsproject.league.repository.MatchRepository;
-import com.minsproject.league.repository.TeamMemberRepository;
 import com.minsproject.league.repository.TeamRepository;
 import com.minsproject.league.validator.MatchValidator;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class MatchService {
 
     private final TeamRepository teamRepository;
 
-    private final TeamMemberRepository teamMemberRepository;
+    private final TeamMemberService teamMemberService;
 
     private final MatchRepository matchRepository;
 
@@ -39,37 +38,14 @@ public class MatchService {
 
     public Long createMatch(MatchDTO matchDTO, UserDTO userDTO) {
 
-        if (matchValidator.isMatchDayBeforeNow(matchDTO.getMatchDay())) {
-            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY);
-        }
+        validateMatchRequest(matchDTO);
 
-        if (matchValidator.isPlaceNotNull(matchDTO.getPlace())) {
-            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_PLACE);
-        }
+        Place matchPlace = getOrCreatePlace(matchDTO.getPlace());
 
-        boolean isNewPlace = matchDTO.getPlace().isNewPlace();
-        Place matchPlace;
-        if (isNewPlace) {
-            matchPlace = placeRepository.save(matchDTO.getPlace().toEntity());
-        } else {
-            matchPlace = placeRepository.findById(matchDTO.getPlace().getPlaceId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.INVALID_MATCH_PLACE));
-        }
+        TeamMember teamMember = getTeamMemberAndCheckRole(matchDTO.getInviterTeamId(), userDTO.getUserId());
 
-        TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(matchDTO.getInviterTeamId(), userDTO.getUserId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
-
-        if (teamMember.isNormalMember()) {
-            throw new LeagueCustomException(ErrorCode.MATCH_INVITE_NOT_ALLOWED);
-        }
-
-        Team inviter = teamRepository.findById(teamMember.getTeam().getTeamId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
-        if (!inviter.isAcceptingMatch()) {
-            throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES);
-        }
-
-        Team invitee = teamRepository.findById(matchDTO.getInviteeTeamId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
-        if (!invitee.isAcceptingMatch()) {
-            throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES);
-        }
+        Team inviter = validateTeamStatus(teamMember.getTeamMemberId());
+        Team invitee = validateTeamStatus(matchDTO.getInviteeTeamId());
 
         return matchRepository.save(matchDTO.toEntity(inviter, invitee, matchPlace)).getMatchId();
     }
@@ -94,5 +70,43 @@ public class MatchService {
         return dto.getStatus() == null
                 && dto.getStartDate() == null
                 && dto.getEndDate() == null;
+    }
+
+    private Team validateTeamStatus(Long teamId) {
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
+
+        if (!team.isAcceptingMatch()) {
+            throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MATCHES);
+        }
+
+        return team;
+    }
+
+    private TeamMember getTeamMemberAndCheckRole(Long inviterTeamId, Long userId) {
+        TeamMember teamMember = teamMemberService.findByTeamIdAndUserId(inviterTeamId, userId);
+
+        if (teamMember.isNormalMember()) {
+            throw new LeagueCustomException(ErrorCode.MATCH_INVITE_NOT_ALLOWED);
+        }
+
+        return teamMember;
+    }
+
+    private Place getOrCreatePlace(PlaceDTO place) {
+        if (place.isNewPlace()) {
+            return placeRepository.save(place.toEntity());
+        }
+        return placeRepository.findById(place.getPlaceId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.INVALID_MATCH_PLACE));
+
+    }
+
+    private void validateMatchRequest(MatchDTO matchDTO) {
+        if (matchValidator.isMatchDayBeforeNow(matchDTO.getMatchDay())) {
+            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_DAY);
+        }
+
+        if (matchValidator.isPlaceNotNull(matchDTO.getPlace())) {
+            throw new LeagueCustomException(ErrorCode.INVALID_MATCH_PLACE);
+        }
     }
 }

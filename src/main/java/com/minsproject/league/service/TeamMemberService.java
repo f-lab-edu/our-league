@@ -72,4 +72,8 @@ public class TeamMemberService {
 
         throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
     }
+
+    public TeamMember findByTeamIdAndUserId(Long teamId, Long userId) {
+        return teamMemberRepository.findByTeamIdAndUserId(teamId, userId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+    }
 }
