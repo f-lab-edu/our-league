@@ -10,4 +10,6 @@ public interface TeamCustomRepository {
     List<Team> findByTeamIdGreaterThanOffsetId(TeamSearchDTO searchDTO);
 
     List<Team> findTeamsForMatch(TeamSearchDTO searchDTO);
+
+    List<Team> findTeamsWithinRange(double minLat, double maxLat, double minLon, double maxLon, int limit);
 }

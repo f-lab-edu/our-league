@@ -3,7 +3,7 @@ package com.minsproject.league.service;
 import com.minsproject.league.constant.status.MatchStatus;
 import com.minsproject.league.dto.*;
 import com.minsproject.league.dto.response.MatchResponse;
-import com.minsproject.league.dto.response.TeamResponse;
+import com.minsproject.league.dto.response.TeamMapResponse;
 import com.minsproject.league.entity.Match;
 import com.minsproject.league.entity.Result;
 import com.minsproject.league.entity.Team;
@@ -37,8 +37,8 @@ public class MatchService {
 
     private final MatchValidator matchValidator;
 
-    public List<TeamResponse> getTeamList(TeamSearchDTO searchDTO) {
-        return teamRepository.findTeamsForMatch(searchDTO).stream().map(TeamResponse::fromEntity).toList();
+    public List<TeamMapResponse> getTeamList(TeamSearchDTO searchDTO) {
+        return teamRepository.findTeamsForMatch(searchDTO).stream().map(TeamMapResponse::fromEntity).toList();
     }
 
     public Long createMatch(MatchDTO matchDTO, UserDTO userDTO) {

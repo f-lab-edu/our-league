@@ -2,6 +2,7 @@ package com.minsproject.league.repository.querydsl;
 
 import com.minsproject.league.dto.TeamSearchDTO;
 import com.minsproject.league.entity.Team;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
@@ -31,14 +32,27 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     public List<Team> findTeamsForMatch(TeamSearchDTO searchDTO) {
         return jpaQueryFactory
                 .selectFrom(team)
-                .where(
-                        team.city.eq(searchDTO.getCity())
-                        .and(team.town.eq(searchDTO.getTown()))
-                        .and(team.dong.eq(searchDTO.getDong()))
-                        .and(team.sports.sportsId.eq(searchDTO.getSportsId()))
-                )
+//                .where(
+//                        team.city.eq(searchDTO.getCity())
+//                        .and(team.town.eq(searchDTO.getTown()))
+//                        .and(team.dong.eq(searchDTO.getDong()))
+//                        .and(team.sports.sportsId.eq(searchDTO.getSportsId()))
+//                )
                 .fetch()
                 ;
     }
 
+    @Override
+    public List<Team> findTeamsWithinRange(double minLat, double maxLat, double minLon, double maxLon, int limit) {
+        return jpaQueryFactory
+                .select(Projections.bean(Team.class, team.teamId, team.lat, team.lon))
+                .from(team)
+                .where(
+                        team.lat.between(minLat, maxLat)
+                        .and(team.lon.between(minLon, maxLon))
+                )
+                .limit(limit)
+                .fetch()
+                ;
+    }
 }

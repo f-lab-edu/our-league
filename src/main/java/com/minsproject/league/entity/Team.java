@@ -44,6 +44,10 @@ public class Team extends BaseEntity {
     @Column(nullable = false)
     private String detailAddress; //상세주소
 
+    private double lat;
+
+    private double lon;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TeamStatus status;

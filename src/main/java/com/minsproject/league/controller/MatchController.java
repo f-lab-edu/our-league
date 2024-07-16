@@ -2,7 +2,7 @@ package com.minsproject.league.controller;
 
 import com.minsproject.league.dto.*;
 import com.minsproject.league.dto.response.MatchResponse;
-import com.minsproject.league.dto.response.TeamResponse;
+import com.minsproject.league.dto.response.TeamMapResponse;
 import com.minsproject.league.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +24,7 @@ public class MatchController {
     @GetMapping
     @Operation(summary = "매칭이 가능한 팀 목록 조회")
     @ApiResponse(responseCode = "200", description = "동일한 주소, 운동 종목을 가진 매칭 가능 팀 목록을 반환한다")
-    public List<TeamResponse> teamListForMatch(TeamSearchDTO teamSearchDTO) {
+    public List<TeamMapResponse> teamListForMatch(TeamSearchDTO teamSearchDTO) {
         return matchService.getTeamList(teamSearchDTO);
     }
 
