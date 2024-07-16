@@ -1,12 +1,13 @@
 package com.minsproject.league.repository.querydsl;
 
 import com.minsproject.league.dto.TeamSearchDTO;
-import com.minsproject.league.entity.QTeam;
 import com.minsproject.league.entity.Team;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.minsproject.league.entity.QTeam.team;
 
 @Repository
 public class TeamCustomRepositoryImpl implements TeamCustomRepository {
@@ -20,8 +21,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     @Override
     public List<Team> findByTeamIdGreaterThanOffsetId(TeamSearchDTO searchDTO) {
         return jpaQueryFactory
-                .selectFrom(QTeam.team)
-                .where(QTeam.team.teamId.gt(searchDTO.getOffsetId()))
+                .selectFrom(team)
+                .where(team.teamId.gt(searchDTO.getOffsetId()))
                 .limit(searchDTO.getPageSize())
                 .fetch();
     }
@@ -29,12 +30,12 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     @Override
     public List<Team> findTeamsForMatch(TeamSearchDTO searchDTO) {
         return jpaQueryFactory
-                .selectFrom(QTeam.team)
+                .selectFrom(team)
                 .where(
-                        QTeam.team.city.eq(searchDTO.getCity())
-                        .and(QTeam.team.town.eq(searchDTO.getTown()))
-                        .and(QTeam.team.dong.eq(searchDTO.getDong()))
-                        .and(QTeam.team.sports.sportsId.eq(searchDTO.getSportsId()))
+                        team.city.eq(searchDTO.getCity())
+                        .and(team.town.eq(searchDTO.getTown()))
+                        .and(team.dong.eq(searchDTO.getDong()))
+                        .and(team.sports.sportsId.eq(searchDTO.getSportsId()))
                 )
                 .fetch()
                 ;
