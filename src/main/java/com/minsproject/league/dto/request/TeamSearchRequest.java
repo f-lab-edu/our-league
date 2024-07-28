@@ -1,4 +1,4 @@
-package com.minsproject.league.dto;
+package com.minsproject.league.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
-public class TeamSearchDTO {
+public class TeamSearchRequest {
 
     private Integer pageSize = 10;
 
@@ -24,12 +24,12 @@ public class TeamSearchDTO {
     @Setter
     private Long sportsId;
 
-    public TeamSearchDTO(Integer pageSize, Long offsetId) {
+    public TeamSearchRequest(Integer pageSize, Long offsetId) {
         this.pageSize = pageSize;
         this.offsetId = offsetId;
     }
 
-    public TeamSearchDTO(Integer pageSize, Long offsetId, String city, String town, String dong, Long sportsId) {
+    public TeamSearchRequest(Integer pageSize, Long offsetId, String city, String town, String dong, Long sportsId) {
         this.pageSize = pageSize;
         this.offsetId = offsetId;
         this.city = city;

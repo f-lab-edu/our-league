@@ -1,6 +1,6 @@
 package com.minsproject.league.validator;
 
-import com.minsproject.league.dto.PlaceDTO;
+import com.minsproject.league.dto.request.PlaceRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ public class MatchValidator {
         return matchDay.isBefore(LocalDateTime.now());
     }
 
-    public boolean isPlaceNotNull(PlaceDTO place) {
+    public boolean isPlaceNotNull(PlaceRequest place) {
         return place.getCity() != null
                 || place.getTown() != null
                 || place.getDong() != null

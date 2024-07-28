@@ -1,7 +1,7 @@
 package com.minsproject.league.repository.querydsl;
 
 import com.minsproject.league.constant.status.MatchStatus;
-import com.minsproject.league.dto.MatchSearchDTO;
+import com.minsproject.league.dto.request.MatchSearchRequest;
 import com.minsproject.league.entity.Match;
 import com.minsproject.league.entity.QMatch;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -32,7 +32,7 @@ public class MatchCustomRepositoryImpl implements MatchCustomRepository {
     }
 
     @Override
-    public List<Match> findFilteredMatchesByInviteeId(Long teamId, MatchSearchDTO dto) {
+    public List<Match> findFilteredMatchesByInviteeId(Long teamId, MatchSearchRequest dto) {
         return jpaQueryFactory
                 .selectFrom(QMatch.match)
                 .where(QMatch.match.invitee.teamId.eq(teamId)

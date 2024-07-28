@@ -1,9 +1,9 @@
 package com.minsproject.league.controller;
 
-import com.minsproject.league.dto.MatchDTO;
-import com.minsproject.league.dto.MatchSearchDTO;
-import com.minsproject.league.dto.TeamSearchDTO;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.request.MatchRequest;
+import com.minsproject.league.dto.request.MatchSearchRequest;
+import com.minsproject.league.dto.request.TeamSearchRequest;
+import com.minsproject.league.dto.request.UserRequest;
 import com.minsproject.league.dto.response.MatchResponse;
 import com.minsproject.league.dto.response.TeamResponse;
 import com.minsproject.league.service.MatchService;
@@ -27,22 +27,22 @@ public class MatchController {
     @GetMapping
     @Operation(summary = "매칭이 가능한 팀 목록 조회")
     @ApiResponse(responseCode = "200", description = "동일한 주소, 운동 종목을 가진 매칭 가능 팀 목록을 반환한다")
-    public List<TeamResponse> teamListForMatch(TeamSearchDTO teamSearchDTO) {
-        return matchService.getTeamList(teamSearchDTO);
+    public List<TeamResponse> teamListForMatch(TeamSearchRequest teamSearchRequest) {
+        return matchService.getTeamList(teamSearchRequest);
     }
 
     @PostMapping
     @Operation(summary = "매칭 신청")
     @ApiResponse(responseCode = "200", description = "신청된 매칭 아이디를 반환한다")
-    public Long createMatch(MatchDTO matchDTO, @AuthenticationPrincipal UserDTO userDTO) {
-        return matchService.createMatch(matchDTO, userDTO);
+    public Long createMatch(MatchRequest matchRequest, @AuthenticationPrincipal UserRequest userRequest) {
+        return matchService.createMatch(matchRequest, userRequest);
     }
 
     @GetMapping("/received")
     @Operation(summary = "받은 매칭 목록")
     @ApiResponse(responseCode = "200", description = "받은 매칭 목록을 반환한다")
     public List<MatchResponse> receivedMatchList(
-            @ModelAttribute MatchSearchDTO matchSearchDTO) {
-        return matchService.getReceivedMatchList(matchSearchDTO);
+            @ModelAttribute MatchSearchRequest matchSearchRequest) {
+        return matchService.getReceivedMatchList(matchSearchRequest);
     }
 }

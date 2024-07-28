@@ -1,7 +1,7 @@
 package com.minsproject.league.controller;
 
-import com.minsproject.league.dto.TeamMemberDTO;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.request.TeamMemberRequest;
+import com.minsproject.league.dto.request.UserRequest;
 import com.minsproject.league.dto.response.TeamMemberResponse;
 import com.minsproject.league.service.TeamMemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,20 +24,20 @@ public class TeamMemberController {
     @Operation(summary = "팀 멤버 등록")
     @ApiResponse(responseCode = "200", description = "팀 멤버 등록에 성공하면 등록된 팀 멤버의 ID를 반환한다")
     public Long create(@PathVariable Long teamId, Authentication authentication) {
-        UserDTO principal = (UserDTO) authentication.getPrincipal();
+        UserRequest principal = (UserRequest) authentication.getPrincipal();
         return teamMemberService.create(teamId, principal);
     }
 
     @PutMapping
     @Operation(summary = "팀 멤버 수정")
     @ApiResponse(responseCode = "200", description = "팀 멤버 수정에 성공하면 수정된 팀 멤버를 반환한다")
-    public TeamMemberResponse modify(@RequestBody TeamMemberDTO teamMemberDTO, Authentication authentication) {
-        UserDTO principal = (UserDTO) authentication.getPrincipal();
-        return teamMemberService.modify(teamMemberDTO, principal);
+    public TeamMemberResponse modify(@RequestBody TeamMemberRequest teamMemberRequest, Authentication authentication) {
+        UserRequest principal = (UserRequest) authentication.getPrincipal();
+        return teamMemberService.modify(teamMemberRequest, principal);
     }
 
     @DeleteMapping("/{teamMemberId}")
-    public void delete(@PathVariable Long teamMemberId, @AuthenticationPrincipal UserDTO user) {
+    public void delete(@PathVariable Long teamMemberId, @AuthenticationPrincipal UserRequest user) {
         teamMemberService.delete(teamMemberId, user);
     }
 }

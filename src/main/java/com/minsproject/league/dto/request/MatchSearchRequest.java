@@ -1,4 +1,4 @@
-package com.minsproject.league.dto;
+package com.minsproject.league.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class MatchSearchDTO {
+public class MatchSearchRequest {
 
     private Integer pageSize = 10;
 
@@ -21,13 +21,13 @@ public class MatchSearchDTO {
 
     private LocalDateTime endDate;
 
-    public MatchSearchDTO(Integer pageSize, Long offsetId, Long teamId) {
+    public MatchSearchRequest(Integer pageSize, Long offsetId, Long teamId) {
         this.pageSize = pageSize;
         this.offsetId = offsetId;
         this.teamId = teamId;
     }
 
-    public MatchSearchDTO(Integer pageSize, Long offsetId, String status, LocalDateTime startDate, LocalDateTime endDate) {
+    public MatchSearchRequest(Integer pageSize, Long offsetId, String status, LocalDateTime startDate, LocalDateTime endDate) {
         this.pageSize = pageSize;
         this.offsetId = offsetId;
         this.status = status;

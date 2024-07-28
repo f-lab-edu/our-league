@@ -1,4 +1,4 @@
-package com.minsproject.league.dto;
+package com.minsproject.league.dto.request;
 
 import com.minsproject.league.entity.Place;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PlaceDTO {
+public class PlaceRequest {
 
     private Long placeId;
 
@@ -28,9 +28,5 @@ public class PlaceDTO {
                 this.detailAddress,
                 this.zipcode
         );
-    }
-
-    public boolean isNewPlace() {
-        return this.placeId == null;
     }
 }

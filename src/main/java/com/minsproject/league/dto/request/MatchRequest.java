@@ -1,4 +1,4 @@
-package com.minsproject.league.dto;
+package com.minsproject.league.dto.request;
 
 import com.minsproject.league.constant.status.MatchStatus;
 import com.minsproject.league.entity.Match;
@@ -10,7 +10,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class MatchDTO {
+public class MatchRequest {
 
     @NotNull
     private Long inviterTeamId;
@@ -19,14 +19,14 @@ public class MatchDTO {
     private Long inviteeTeamId;
 
     @NotNull(message = "매칭 장소를 선택해주세요.")
-    private PlaceDTO place;
+    private PlaceRequest place;
 
     @NotNull(message = "매칭 날짜를 선택해주세요.")
     private LocalDateTime matchDay;
 
     private MatchStatus status;
 
-    public MatchDTO(Long inviterTeamId, Long inviteeTeamId, PlaceDTO place, LocalDateTime matchDay, MatchStatus status) {
+    public MatchRequest(Long inviterTeamId, Long inviteeTeamId, PlaceRequest place, LocalDateTime matchDay, MatchStatus status) {
         this.inviterTeamId = inviterTeamId;
         this.inviteeTeamId = inviteeTeamId;
         this.place = place;

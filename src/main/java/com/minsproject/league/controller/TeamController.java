@@ -1,7 +1,7 @@
 package com.minsproject.league.controller;
 
-import com.minsproject.league.dto.TeamSearchDTO;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.request.TeamSearchRequest;
+import com.minsproject.league.dto.request.UserRequest;
 import com.minsproject.league.dto.request.TeamCreateRequest;
 import com.minsproject.league.dto.request.TeamModifyRequest;
 import com.minsproject.league.dto.response.TeamResponse;
@@ -26,28 +26,28 @@ public class TeamController {
     @GetMapping
     @Operation(summary = "팀 목록 조회")
     @ApiResponse(responseCode = "200", description = "검색 조건에 부합하는 팀 목록을 반환한다")
-    public List<TeamResponse> teamList(TeamSearchDTO searchDTO) {
+    public List<TeamResponse> teamList(TeamSearchRequest searchDTO) {
         return teamService.getTeamList(searchDTO);
     }
 
     @PostMapping
     @Operation(summary = "팀 등록")
     @ApiResponse(responseCode = "200", description = "팀 등록에 성공하면 등록된 ID를 반환한다")
-    public Long create(@RequestBody TeamCreateRequest request) {
-        return teamService.create(request);
+    public Long create(@RequestBody TeamCreateRequest request, @AuthenticationPrincipal UserRequest userRequest) {
+        return teamService.create(request, userRequest);
     }
 
     @PutMapping("/{teamId}")
     @Operation(summary = "팀 수정")
     @ApiResponse(responseCode = "200", description = "팀 수정에 성공하면 수정된 팀 정보를 반환한다")
-    public TeamResponse modify(@PathVariable Long teamId, @RequestBody TeamModifyRequest request, @AuthenticationPrincipal UserDTO userDTO) {
-        return teamService.modify(teamId, request, userDTO);
+    public TeamResponse modify(@PathVariable Long teamId, @RequestBody TeamModifyRequest request, @AuthenticationPrincipal UserRequest userRequest) {
+        return teamService.modify(teamId, request, userRequest);
     }
 
     @DeleteMapping("/{teamId}")
     @Operation(summary = "팀 삭제")
     @ApiResponse(responseCode = "200")
-    public void deleteTeam(@PathVariable Long teamId, @AuthenticationPrincipal UserDTO userDTO) {
-        teamService.delete(teamId, userDTO);
+    public void deleteTeam(@PathVariable Long teamId, @AuthenticationPrincipal UserRequest userRequest) {
+        teamService.delete(teamId, userRequest);
     }
 }

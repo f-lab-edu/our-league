@@ -1,6 +1,6 @@
 package com.minsproject.league.repository.querydsl;
 
-import com.minsproject.league.dto.TeamSearchDTO;
+import com.minsproject.league.dto.request.TeamSearchRequest;
 import com.minsproject.league.entity.Team;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -19,7 +19,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public List<Team> findByTeamIdGreaterThanOffsetId(TeamSearchDTO searchDTO) {
+    public List<Team> findByTeamIdGreaterThanOffsetId(TeamSearchRequest searchDTO) {
         return jpaQueryFactory
                 .selectFrom(team)
                 .where(team.teamId.gt(searchDTO.getOffsetId()))
@@ -28,7 +28,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public List<Team> findTeamsForMatch(TeamSearchDTO searchDTO) {
+    public List<Team> findTeamsForMatch(TeamSearchRequest searchDTO) {
         return jpaQueryFactory
                 .selectFrom(team)
                 .where(

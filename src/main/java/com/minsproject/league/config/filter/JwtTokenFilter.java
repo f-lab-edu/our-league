@@ -1,6 +1,6 @@
 package com.minsproject.league.config.filter;
 
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.request.UserRequest;
 import com.minsproject.league.service.UserService;
 import com.minsproject.league.util.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
@@ -44,7 +44,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
 
             String email = JwtTokenUtils.getUserEmail(token, key);
-            UserDTO user = userService.loadUserByUserEmail(email);
+            UserRequest user = userService.loadUserByUserEmail(email);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
