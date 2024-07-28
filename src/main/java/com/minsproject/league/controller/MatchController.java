@@ -38,12 +38,11 @@ public class MatchController {
         return matchService.createMatch(matchDTO, userDTO);
     }
 
-    @GetMapping("/received/{teamId}")
+    @GetMapping("/received")
     @Operation(summary = "받은 매칭 목록")
     @ApiResponse(responseCode = "200", description = "받은 매칭 목록을 반환한다")
     public List<MatchResponse> receivedMatchList(
-            @PathVariable Long teamId,
             @ModelAttribute MatchSearchDTO matchSearchDTO) {
-        return matchService.getReceivedMatchList(teamId, matchSearchDTO);
+        return matchService.getReceivedMatchList(matchSearchDTO);
     }
 }

@@ -50,12 +50,12 @@ public class MatchService {
         return matchRepository.save(matchDTO.toEntity(inviter, invitee, matchPlace)).getMatchId();
     }
 
-    public List<MatchResponse> getReceivedMatchList(Long teamId, MatchSearchDTO dto) {
+    public List<MatchResponse> getReceivedMatchList(MatchSearchDTO dto) {
         if (isAllSearch(dto)) {
-            return getAllMatches(teamId, dto.getPageSize(), dto.getOffsetId());
+            return getAllMatches(dto.getTeamId(), dto.getPageSize(), dto.getOffsetId());
         }
 
-        return getFilteredMatches(teamId, dto);
+        return getFilteredMatches(dto.getTeamId(), dto);
     }
 
     private List<MatchResponse> getAllMatches(Long teamId, Integer pageSize, Long offsetId) {
