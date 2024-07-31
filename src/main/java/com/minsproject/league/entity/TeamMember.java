@@ -2,7 +2,7 @@ package com.minsproject.league.entity;
 
 import com.minsproject.league.constant.TeamMemberRole;
 import com.minsproject.league.constant.status.TeamMemberStatus;
-import com.minsproject.league.dto.TeamMemberDTO;
+import com.minsproject.league.dto.request.TeamMemberRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class TeamMember extends BaseEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -51,7 +51,11 @@ public class TeamMember extends BaseEntity {
         this.status = status;
     }
 
-    public void modify(TeamMemberDTO dto) {
+    public static TeamMember createOwner(Team team, User user) {
+        return new TeamMember(team, user, TeamMemberRole.OWNER, TeamMemberStatus.NORMAL);
+    }
+
+    public void modify(TeamMemberRequest dto) {
         this.role = TeamMemberRole.valueOf(dto.getRole().toUpperCase());
         this.status = TeamMemberStatus.valueOf(dto.getStatus().toUpperCase());
         this.statusChangedAt = new Timestamp(System.currentTimeMillis());

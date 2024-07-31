@@ -1,7 +1,9 @@
 package com.minsproject.league.dto.response;
 
 import com.minsproject.league.entity.TeamMember;
+import lombok.Getter;
 
+@Getter
 public class TeamMemberResponse {
 
     private Long teamMemberId;
