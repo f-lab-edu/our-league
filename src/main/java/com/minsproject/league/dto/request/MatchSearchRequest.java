@@ -34,4 +34,10 @@ public class MatchSearchRequest {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
+    public boolean isAllSearch() {
+        return this.status == null
+                && this.startDate == null
+                && this.endDate == null;
+    }
 }
