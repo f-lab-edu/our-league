@@ -2,13 +2,9 @@ package com.minsproject.league.dto.request;
 
 import com.minsproject.league.entity.Place;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-public class PlaceRequest {
-
-    private Long placeId;
+public class PlaceCreateRequest {
 
     private String placeName;
 
@@ -22,14 +18,15 @@ public class PlaceRequest {
 
     private Integer zipcode;
 
-    public Place toEntity() {
+    public static Place toEntity(PlaceCreateRequest request) {
         return new Place(
-                this.placeName,
-                this.city,
-                this.town,
-                this.dong,
-                this.detailAddress,
-                this.zipcode
+                request.getPlaceName(),
+                request.getCity(),
+                request.getTown(),
+                request.getDong(),
+                request.getDetailAddress(),
+                request.getZipcode()
         );
     }
+
 }
