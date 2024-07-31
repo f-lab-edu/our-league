@@ -1,4 +1,4 @@
-package com.minsproject.league.dto;
+package com.minsproject.league.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minsproject.league.constant.UserRole;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class UserDTO implements UserDetails {
+public class UserRequest implements UserDetails {
 
     private Long userId;
 
@@ -41,7 +41,7 @@ public class UserDTO implements UserDetails {
     private Timestamp modifiedAt;
 
     @Builder
-    private UserDTO(Long userId, String email, String password, String name, String mobileNumber, String socialLoginType, String socialLoginId, UserRole role, Long status, Timestamp createdAt, Timestamp modifiedAt) {
+    private UserRequest(Long userId, String email, String password, String name, String mobileNumber, String socialLoginType, String socialLoginId, UserRole role, Long status, Timestamp createdAt, Timestamp modifiedAt) {
         this.userId = userId;
         this.email = email;
         this.name = name;
@@ -55,8 +55,8 @@ public class UserDTO implements UserDetails {
         this.modifiedAt = modifiedAt;
     }
 
-    public static UserDTO fromEntity(User entity) {
-        return UserDTO.builder()
+    public static UserRequest fromEntity(User entity) {
+        return UserRequest.builder()
                 .userId(entity.getUserId())
                 .email(entity.getEmail())
                 .password(entity.getPassword())

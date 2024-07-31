@@ -3,8 +3,8 @@ package com.minsproject.league.service;
 import com.minsproject.league.constant.TeamMemberRole;
 import com.minsproject.league.constant.status.TeamMemberStatus;
 import com.minsproject.league.constant.status.TeamStatus;
-import com.minsproject.league.dto.TeamMemberDTO;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.request.TeamMemberRequest;
+import com.minsproject.league.dto.request.UserRequest;
 import com.minsproject.league.dto.response.TeamMemberResponse;
 import com.minsproject.league.entity.Team;
 import com.minsproject.league.entity.TeamMember;
@@ -30,7 +30,7 @@ public class TeamMemberService {
 
     private final TeamMemberRepository teamMemberRepository;
 
-    public Long create(Long teamId, UserDTO user) {
+    public Long create(Long teamId, UserRequest user) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_NOT_FOUND));
         if (team.getStatus() == TeamStatus.PAUSED) {
             throw new LeagueCustomException(ErrorCode.TEAM_NOT_ACCEPTING_MEMBER);
@@ -44,16 +44,16 @@ public class TeamMemberService {
 
         User userInfo = userService.getUserById(user.getUserId());
 
-        TeamMember saved = teamMemberRepository.save(TeamMemberDTO.toEntity(team, userInfo, TeamMemberRole.NORMAL, TeamMemberStatus.NORMAL));
+        TeamMember saved = teamMemberRepository.save(TeamMemberRequest.toEntity(team, userInfo, TeamMemberRole.NORMAL, TeamMemberStatus.NORMAL));
 
         return saved.getTeamMemberId();
     }
 
-    public TeamMemberResponse modify(TeamMemberDTO teamMemberDTO, UserDTO userDTO) {
-        TeamMember teamMember = teamMemberRepository.findById(teamMemberDTO.getTeamMemberId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
+    public TeamMemberResponse modify(TeamMemberRequest teamMemberRequest, UserRequest userRequest) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberRequest.getTeamMemberId()).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        if (teamMember.isOwnerOrMyself(userDTO.getUserId())) {
-            teamMember.modify(teamMemberDTO);
+        if (teamMember.isOwnerOrMyself(userRequest.getUserId())) {
+            teamMember.modify(teamMemberRequest);
             return TeamMemberResponse.fromEntity(teamMemberRepository.save(teamMember));
         }
 
@@ -61,15 +61,19 @@ public class TeamMemberService {
     }
 
     @Transactional
-    public void delete(Long teamMemberId, UserDTO userDTO) {
+    public void delete(Long teamMemberId, UserRequest userRequest) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
 
-        if (teamMember.isOwnerOrMyself(userDTO.getUserId())) {
+        if (teamMember.isOwnerOrMyself(userRequest.getUserId())) {
             teamMember.delete();
             teamMemberRepository.save(teamMember);
             return;
         }
 
         throw new LeagueCustomException(ErrorCode.MODIFICATION_NOT_ALLOWED);
+    }
+
+    public TeamMember findByTeamIdAndUserId(Long teamId, Long userId) {
+        return teamMemberRepository.findByTeamIdAndUserId(teamId, userId).orElseThrow(() -> new LeagueCustomException(ErrorCode.TEAM_MEMBER_NOT_FOUND));
     }
 }
