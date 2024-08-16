@@ -47,6 +47,8 @@ public class Team extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TeamStatus status;
 
+    private boolean acceptingMatch;
+
     private String creator;
 
     private String modifier;
@@ -84,5 +86,9 @@ public class Team extends BaseEntity {
 
     public void delete() {
         this.isDeleted = true;
+    }
+
+    public boolean isAcceptingMatch() {
+        return this.acceptingMatch;
     }
 }

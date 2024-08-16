@@ -1,4 +1,4 @@
-package com.minsproject.league.dto;
+package com.minsproject.league.dto.request;
 
 import com.minsproject.league.constant.TeamMemberRole;
 import com.minsproject.league.constant.status.TeamMemberStatus;
@@ -8,7 +8,7 @@ import com.minsproject.league.entity.User;
 import lombok.Getter;
 
 @Getter
-public class TeamMemberDTO {
+public class TeamMemberRequest {
 
     private Long teamMemberId;
 

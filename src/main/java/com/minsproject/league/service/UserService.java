@@ -1,7 +1,7 @@
 package com.minsproject.league.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.minsproject.league.dto.UserDTO;
+import com.minsproject.league.dto.request.UserRequest;
 import com.minsproject.league.dto.request.JoinRequest;
 import com.minsproject.league.dto.request.LoginRequest;
 import com.minsproject.league.entity.User;
@@ -30,12 +30,12 @@ public class UserService {
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
-    public UserDTO loadUserByUserEmail(String email) {
-        return userRepository.findByEmail(email).map(UserDTO::fromEntity).orElseThrow(() -> new LeagueCustomException(ErrorCode.USER_NOT_FOUND));
+    public UserRequest loadUserByUserEmail(String email) {
+        return userRepository.findByEmail(email).map(UserRequest::fromEntity).orElseThrow(() -> new LeagueCustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     public String login(LoginRequest req) {
-        UserDTO user = loadUserByUserEmail(req.getEmail());
+        UserRequest user = loadUserByUserEmail(req.getEmail());
 
         if (!encoder.matches(req.getPassword(), user.getPassword())) {
             throw new LeagueCustomException(ErrorCode.INVALID_PASSWORD);
