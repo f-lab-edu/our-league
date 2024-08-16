@@ -2,8 +2,8 @@ package com.minsproject.league.service
 
 import com.minsproject.league.constant.TeamMemberRole
 import com.minsproject.league.constant.UserRole
-import com.minsproject.league.dto.TeamSearchDTO
-import com.minsproject.league.dto.UserDTO
+import com.minsproject.league.dto.request.TeamSearchRequest
+import com.minsproject.league.dto.request.UserRequest
 import com.minsproject.league.dto.request.TeamCreateRequest
 import com.minsproject.league.dto.request.TeamModifyRequest
 import com.minsproject.league.dto.response.TeamResponse
@@ -34,7 +34,7 @@ class TeamServiceTest extends Specification {
     def "TeamSearchDTO의 pageSize가 없으면 10을 기본값으로 잡는다"() {
 
         given: "pageSize가 null인 경우"
-        def searchDTO = new TeamSearchDTO(null, 101)
+        def searchDTO = new TeamSearchRequest(null, 101)
 
         expect: "pageSize는 기본값인 10으로 잡혀야한다"
         10 == searchDTO.getPageSize()
@@ -43,7 +43,7 @@ class TeamServiceTest extends Specification {
     def "TeamSearchDTO의 pageSize 매개변수가 있으면 받은 매개변수를 사용한다"() {
 
         given: "pageSize를 받는 경우"
-        def searchDTO = new TeamSearchDTO(20, 101)
+        def searchDTO = new TeamSearchRequest(20, 101)
 
         expect: "pageSize는 20으로 잡혀야한다"
         20 == searchDTO.getPageSize()
@@ -53,7 +53,7 @@ class TeamServiceTest extends Specification {
 
         given:
         def sports = Sports.builder().sportsId(1).name("축구").build()
-        def searchDTO = new TeamSearchDTO(2, 100)
+        def searchDTO = new TeamSearchRequest(2, 100)
         def teamEntities = [
                 Team.builder()
                         .sports(sports).teamName("teamA").description("team").fullAddress("full Address").city("seoul").town("town").dong("dong").status(1).build(),
@@ -79,7 +79,7 @@ class TeamServiceTest extends Specification {
         sportsRepository.findById(teamCreateReq.sportsId) >> Optional.empty()
 
         when:
-        teamService.create(teamCreateReq)
+        teamService.create(teamCreateReq, userDTO)
 
         then:
         def exception = thrown(LeagueCustomException)
@@ -107,7 +107,7 @@ class TeamServiceTest extends Specification {
         teamRepository.save(_ as Team) >> team
 
         when:
-        def teamId = teamService.create(teamCreateReq)
+        def teamId = teamService.create(teamCreateReq, userDTO)
 
         then:
         teamId == 1L
@@ -117,7 +117,7 @@ class TeamServiceTest extends Specification {
         given:
         def teamId = 999L
         def teamModifyRequest = new TeamModifyRequest(sportsId: 1L, teamName: "", description: "", dong: "", detailAddress: "", status: 1L, modifier: "")
-        def userDTO = new UserDTO(userId: 1L, email: "", name: "", password:"", mobileNumber:"", socialLoginType: "", socialLoginId: "", role: UserRole.USER, status: 1)
+        def userDTO = new UserRequest(userId: 1L, email: "", name: "", password:"", mobileNumber:"", socialLoginType: "", socialLoginId: "", role: UserRole.USER, status: 1)
         teamRepository.findById(teamId) >> Optional.empty()
 
         when:
@@ -132,7 +132,7 @@ class TeamServiceTest extends Specification {
         given:
         def teamId = 1L
         def teamModifyRequest = new TeamModifyRequest(sportsId: 1L)
-        def userDTO = new UserDTO(userId: 1L)
+        def userDTO = new UserRequest(userId: 1L)
         def sports = new Sports(sportsId: 1L, name: "축구", status: 1L)
         def team = new Team(teamId: 1L, sports: sports, teamName: "으라차FC")
         def user = new User(userId: 1L)
@@ -152,7 +152,7 @@ class TeamServiceTest extends Specification {
         given:
         def teamId = 1L
         def teamModifyRequest = new TeamModifyRequest(sportsId: 1L)
-        def userDTO = new UserDTO(userId: 1L)
+        def userDTO = new UserRequest(userId: 1L)
         def sports = new Sports(sportsId: 1L, name: "축구", status: 1L)
         def team = new Team(teamId: 1L, sports: sports, teamName: "으라차FC")
         def user = new User(userId: 1L)
